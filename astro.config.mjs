@@ -1,12 +1,14 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
+import tailwind from '@astrojs/tailwind';
 import cloudflare from '@astrojs/cloudflare';
 import { SITE } from './src/consts';
 
 export default defineConfig({
   site: SITE.url || undefined,
   integrations: [
+    tailwind(),
     ...(SITE.url ? [sitemap()] : []),
   ],
   output: 'server',
