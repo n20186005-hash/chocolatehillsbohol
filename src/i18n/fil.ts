@@ -63,6 +63,9 @@ export const fil: TranslationShape = {
   bestTime: {
     eyebrow: 'Plano ang Iyong Pagbisita',
     heading: 'Pinakamahusay na Oras para Bumisita',
+    season: 'Enero – Mayo (tagtuyot)',
+    timeOfDay: '6:00 AM – 9:00 AM (mas malamig, mas kaunting tao)',
+    duration: '1–2 oras',
     seasonTitle: 'Pinakamahusay na Panahon: {season}',
     seasonText: 'Ang mga burol ay nagiging ginintuang-kayumanggi tuwing mga buwan ng tagtuyot — ang tanyag na anyong "tsokolate". Ang malinaw na langit ay nagbibigay ng pinakamahusay na mga larawang panoramiko.',
     timeTitle: 'Pinakamahusay na Oras ng Araw: {time}',
@@ -97,6 +100,8 @@ export const fil: TranslationShape = {
     eyebrow: 'Paradahan',
     heading: 'Impormasyon sa Paradahan',
     available: 'May Paradahan sa Lugar',
+    capacity: 'Maluwag na paradahan para sa mga bus, van, kotse, at motorsiklo',
+    fee: '₱20–50 bawat sasakyan',
     feeLabel: 'Bayad:',
     tipsLabel: 'Mga Paalala:',
     tips: 'May mga paradero na nagbabantay. Dumating nang maaga (bago mag-9 ng umaga) para sa pinakamagandang puwesto, lalo na tuwing katapusan ng linggo at mga pista opisyal.',
@@ -222,6 +227,9 @@ export const fil: TranslationShape = {
         a: 'Magsuot ng komportableng sapatos para sa mga hakbang, magdala ng tubig, sumbrero o payong para sa proteksyon sa araw, at camera. Ang mga magagaan na meryenda ay mabibili sa complex.',
       },
     ],
+  },
+  location: {
+    country: 'Pilipinas',
   },
   footer: {
     quickLinks: 'Mga Mabilis na Link',

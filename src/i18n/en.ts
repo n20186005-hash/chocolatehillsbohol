@@ -61,6 +61,9 @@ export const en = {
   bestTime: {
     eyebrow: 'Plan Your Visit',
     heading: 'Best Time to Visit',
+    season: 'January – May (dry season)',
+    timeOfDay: '6:00 AM – 9:00 AM (cooler, fewer crowds)',
+    duration: '1–2 hours',
     seasonTitle: 'Best Season: {season}',
     seasonText: 'The hills turn golden-brown during the dry months — the iconic "chocolate" look. Clear skies make for the best panoramic photos.',
     timeTitle: 'Best Time of Day: {time}',
@@ -95,6 +98,8 @@ export const en = {
     eyebrow: 'Parking',
     heading: 'Parking Information',
     available: 'On-site Parking Available',
+    capacity: 'Spacious parking lot for buses, vans, cars, and motorcycles',
+    fee: '₱20–50 per vehicle',
     feeLabel: 'Fee:',
     tipsLabel: 'Tips:',
     tips: 'Parking attendants are available. Arrive early (before 9 AM) for the best spots, especially on weekends and holidays.',
@@ -220,6 +225,9 @@ export const en = {
         a: 'Wear comfortable shoes for the steps, bring water, a hat or umbrella for sun protection, and a camera. Light snacks are available at the complex.',
       },
     ],
+  },
+  location: {
+    country: 'Philippines',
   },
   footer: {
     quickLinks: 'Quick Links',
