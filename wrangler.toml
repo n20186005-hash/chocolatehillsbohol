@@ -1,14 +1,15 @@
 name = "chocolate-hills-complex"
-compatibility_date = "2025-03-01"
 main = "dist/_worker.js/index.js"
-compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
+compatibility_date = "2025-03-01"
+compatibility_flags = ["nodejs_compat"]
 
 [build]
-  command = "pnpm run build"
+command = "pnpm run build"
 
 [assets]
-  directory = "./dist"
-  binding = "ASSETS"
+directory = "./dist"
+binding = "ASSETS"
+run_worker_first = false
 
 [observability]
-  enabled = true
+enabled = true
