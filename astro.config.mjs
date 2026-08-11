@@ -1,7 +1,6 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
-import cloudflare from '@astrojs/cloudflare';
 import { SITE } from './src/consts';
 
 export default defineConfig({
@@ -10,7 +9,9 @@ export default defineConfig({
     ...(SITE.url ? [sitemap()] : []),
   ],
   output: 'static',
-  adapter: cloudflare(),
+  build: {
+    format: 'directory',
+  },
   i18n: {
     defaultLocale: 'fil',
     locales: ['fil', 'en'],

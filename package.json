@@ -12,7 +12,8 @@
     "build": "astro check && astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "dl": "python scripts/download_gallery.py"
+    "dl": "python scripts/download_gallery.py",
+    "deploy:pages": "wrangler pages deploy ./dist --project-name chocolate-hills-complex"
   },
   "dependencies": {
     "@astrojs/sitemap": "3.7.3",
