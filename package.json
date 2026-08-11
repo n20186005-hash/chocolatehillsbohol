@@ -13,6 +13,7 @@
     "preview": "astro preview",
     "check": "astro check",
     "dl": "python scripts/download_gallery.py",
+    "deploy": "wrangler deploy",
     "deploy:pages": "wrangler pages deploy ./dist --project-name chocolate-hills-complex"
   },
   "dependencies": {

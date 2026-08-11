@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
+import cloudflare from '@astrojs/cloudflare';
 import { SITE } from './src/consts';
 
 export default defineConfig({
@@ -8,7 +9,13 @@ export default defineConfig({
   integrations: [
     ...(SITE.url ? [sitemap()] : []),
   ],
-  output: 'static',
+  output: 'server',
+  adapter: cloudflare({
+    platformProxy: {
+      enabled: true,
+    },
+    imageService: 'passthrough',
+  }),
   build: {
     format: 'directory',
   },
