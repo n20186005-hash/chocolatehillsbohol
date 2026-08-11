@@ -1,0 +1,133 @@
+---
+import { getDictionary, type LocaleCode } from '../i18n';
+import LanguageSwitcher from './LanguageSwitcher.astro';
+
+const props = Astro.props as {
+  locale: LocaleCode | string;
+  currentPath: string;
+  siteTitle: string;
+};
+const locale = (props.locale ?? 'fil') as LocaleCode;
+const t = getDictionary(locale);
+
+const links = [
+  { href: '#about', label: t.nav.about },
+  { href: '#gallery', label: t.nav.gallery },
+  { href: '#fees', label: t.nav.fees },
+  { href: '#transport', label: t.nav.transport },
+  { href: '#map', label: t.nav.map },
+  { href: '#faq', label: t.nav.faq },
+];
+---
+
+<nav
+  id="navbar"
+  class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-cream-50/80 backdrop-blur-md shadow-sm"
+>
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between h-14">
+    <!-- Logo -->
+    <a href="#top" class="flex items-center gap-2 no-underline group" aria-label="Home">
+      <img
+        src="/favicon.svg"
+        alt=""
+        class="w-8 h-8 transition-transform group-hover:scale-110"
+        width="32"
+        height="32"
+      />
+      <span class="text-lg font-bold text-chocolate-800 tracking-tight">
+        {props.siteTitle}
+      </span>
+    </a>
+
+    <!-- Nav links (desktop) -->
+    <ul class="hidden md:flex items-center gap-1 text-sm font-medium" id="nav-links">
+      {
+        links.map(({ href, label }) => (
+          <li>
+            <a
+              href={href}
+              class="px-3 py-2 rounded-lg text-chocolate-700 hover:text-chocolate-900 hover:bg-chocolate-100 transition-colors"
+            >
+              {label}
+            </a>
+          </li>
+        ))
+      }
+      <li class="ml-2">
+        <LanguageSwitcher locale={locale} currentPath={props.currentPath} />
+      </li>
+    </ul>
+
+    <!-- Right controls (mobile) -->
+    <div class="md:hidden flex items-center gap-1">
+      <LanguageSwitcher locale={locale} currentPath={props.currentPath} />
+      <button
+        id="menu-toggle"
+        class="p-2 rounded-lg text-chocolate-700 hover:bg-chocolate-100 transition-colors"
+        aria-label="Toggle menu"
+        aria-expanded="false"
+      >
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path id="menu-icon-open" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          <path id="menu-icon-close" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 6l12 12M6 18L18 6" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile dropdown -->
+  <div id="mobile-menu" class="hidden md:hidden border-t border-chocolate-100 bg-cream-50/95 backdrop-blur-md pb-3">
+    <ul class="flex flex-col px-4 pt-2 gap-1 text-sm font-medium">
+      {
+        links.map(({ href, label }) => (
+          <li>
+            <a
+              href={href}
+              class="block px-3 py-2 rounded-lg text-chocolate-700 hover:text-chocolate-900 hover:bg-chocolate-100 transition-colors"
+            >
+              {label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</nav>
+
+<script>
+  // Mobile menu toggle
+  const toggle = document.getElementById('menu-toggle')!;
+  const menu = document.getElementById('mobile-menu')!;
+  const openIcon = document.getElementById('menu-icon-open')!;
+  const closeIcon = document.getElementById('menu-icon-close')!;
+  toggle.addEventListener('click', () => {
+    const isOpen = !menu.classList.contains('hidden');
+    menu.classList.toggle('hidden', isOpen);
+    openIcon.classList.toggle('hidden', !isOpen);
+    closeIcon.classList.toggle('hidden', isOpen);
+    toggle.setAttribute('aria-expanded', String(!isOpen));
+  });
+  // Close on link click
+  menu.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      menu.classList.add('hidden');
+      openIcon.classList.remove('hidden');
+      closeIcon.classList.add('hidden');
+      toggle.setAttribute('aria-expanded', 'false');
+    });
+  });
+
+  // Navbar scroll style
+  const navbar = document.getElementById('navbar')!;
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    if (y > 80) {
+      navbar.classList.add('shadow-md');
+      navbar.classList.remove('shadow-sm');
+    } else {
+      navbar.classList.add('shadow-sm');
+      navbar.classList.remove('shadow-md');
+    }
+    navbar.style.setProperty('--scroll-y', String(y));
+  });
+</script>

@@ -1,0 +1,630 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { ATTRACTION, SITE } from '../consts';
+import { getDictionary, type LocaleCode } from '../i18n';
+
+const props = Astro.props as {
+  locale: LocaleCode | string;
+  currentPath?: string;
+};
+const locale = (props.locale ?? 'fil') as LocaleCode;
+const currentPath = props.currentPath ?? (locale === 'fil' ? '/' : '/en/');
+const t = getDictionary(locale);
+
+const faqs = t.faq.items;
+const checklist = [
+  { id: 'climb-view-deck', label: t.itinerary.items.climb },
+  { id: 'photo-sunrise', label: t.itinerary.items.sunrise },
+  { id: 'taste-treats', label: t.itinerary.items.treats },
+  { id: 'visit-adventure-park', label: t.itinerary.items.adventure },
+  { id: 'see-tarsiers', label: t.itinerary.items.tarsiers },
+  { id: 'loboc-river', label: t.itinerary.items.lobocRiver },
+  { id: 'man-made-forest', label: t.itinerary.items.manMade },
+  { id: 'alona-beach', label: t.itinerary.items.alona },
+  { id: 'baclayon-church', label: t.itinerary.items.baclayonChurch },
+  { id: 'hinagdanan-cave', label: t.itinerary.items.hinagdananCave },
+];
+const foodList = [
+  { name: t.food.venue.chocRestaurant, type: t.food.venueType.local, distance: t.food.distanceOnSite, detail: t.food.venueDetail.chocRestaurant },
+  { name: t.food.venue.lobocRiver, type: t.food.venueType.buffet, distance: ATTRACTION.nearbyFood[1].distance, detail: t.food.venueDetail.lobocRiver },
+  { name: t.food.venue.buzzCafe, type: t.food.venueType.organic, distance: ATTRACTION.nearbyFood[2].distance, detail: t.food.venueDetail.buzzCafe },
+  { name: t.food.venue.gerardas, type: t.food.venueType.fine, distance: ATTRACTION.nearbyFood[3].distance, detail: t.food.venueDetail.gerardas },
+  { name: t.food.venue.trudis, type: t.food.venueType.local, distance: ATTRACTION.nearbyFood[4].distance, detail: t.food.venueDetail.trudis },
+  { name: t.food.venue.jmj, type: t.food.venueType.local, distance: ATTRACTION.nearbyFood[5].distance, detail: t.food.venueDetail.jmj },
+];
+const nearbyList = [
+  { name: t.nearby.names.adventurePark, distance: ATTRACTION.nearbyAttractions[0].distance, detail: t.nearby.details.adventurePark },
+  { name: t.nearby.names.manMadeForest, distance: ATTRACTION.nearbyAttractions[1].distance, detail: t.nearby.details.manMadeForest },
+  { name: t.nearby.names.tarsier, distance: ATTRACTION.nearbyAttractions[2].distance, detail: t.nearby.details.tarsier },
+  { name: t.nearby.names.lobocCruise, distance: ATTRACTION.nearbyAttractions[3].distance, detail: t.nearby.details.lobocCruise },
+  { name: t.nearby.names.hangingBridge, distance: ATTRACTION.nearbyAttractions[4].distance, detail: t.nearby.details.hangingBridge },
+  { name: t.nearby.names.baclayon, distance: ATTRACTION.nearbyAttractions[5].distance, detail: t.nearby.details.baclayon },
+  { name: t.nearby.names.hinagdanan, distance: ATTRACTION.nearbyAttractions[6].distance, detail: t.nearby.details.hinagdanan },
+  { name: t.nearby.names.panglao, distance: ATTRACTION.nearbyAttractions[7].distance, detail: t.nearby.details.panglao },
+];
+const photos = Array.from({ length: 12 }, (_, i) => ({
+  src: `/gallery/chocolate-hills-${i + 1}.jpg`,
+  alt: t.gallery.altTemplate.replace('{n}', String(i + 1)),
+  width: 1200,
+  height: 800,
+}));
+const transportOptions = (Object.keys(t.transport.modes) as Array<keyof typeof t.transport.modes>).map(mode => ({
+  mode: t.transport.modes[mode],
+  detail: t.transport.modeDetails[mode],
+}));
+
+const fullMapsUrl = ATTRACTION.maps.share;
+const embedSrc = ATTRACTION.maps.embed;
+
+function feeLabel(php: number) { return php === 0 ? t.freeLabel : `₱${php}`; }
+function replace(template: string, vars: Record<string, string | number>): string {
+  let out = template;
+  for (const [k, v] of Object.entries(vars)) out = out.replaceAll(`{${k}}`, String(v));
+  return out;
+}
+---
+
+<BaseLayout locale={locale} currentPath={currentPath} title={t._meta.siteTitle} description={t._meta.siteDescription}>
+  <!-- 1. HERO -->
+  <section id="hero" class="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <div class="absolute inset-0 z-0">
+      <img
+        src="/gallery/chocolate-hills-1.jpg"
+        alt={t.gallery.altTemplate.replace('{n}', '1')}
+        class="w-full h-full object-cover"
+        loading="eager"
+        decoding="async"
+        width="1200"
+        height="800"
+      />
+      <div class="absolute inset-0 bg-gradient-to-b from-chocolate-950/60 via-chocolate-950/40 to-cream-50"></div>
+    </div>
+
+    <div class="relative z-10 text-center px-4 max-w-4xl mx-auto pt-16">
+      <div class="animate-fade-up opacity-0" style="animation-delay:0.1s">
+        <span class="inline-block px-4 py-1.5 rounded-full bg-cream-50/20 backdrop-blur-sm text-cream-200 text-sm font-medium tracking-wide mb-6">
+          {ATTRACTION.addressRegion}, {ATTRACTION.addressCountry}
+        </span>
+      </div>
+      <h1 class="animate-fade-up opacity-0 text-4xl sm:text-5xl md:text-7xl font-display font-bold text-cream-50 leading-tight mb-4" style="animation-delay:0.25s">
+        {ATTRACTION.name}
+      </h1>
+      <p class="animate-fade-up opacity-0 text-lg sm:text-xl text-cream-200 mb-2 max-w-2xl mx-auto" style="animation-delay:0.4s">
+        {t._meta.tagline}
+      </p>
+      <p class="animate-fade-up opacity-0 text-sm text-cream-400 mb-10" style="animation-delay:0.45s">
+        {ATTRACTION.hillCount.toLocaleString()} {t.hero.subTagline} {ATTRACTION.hillArea}
+      </p>
+      <div class="animate-fade-up opacity-0 flex flex-col sm:flex-row items-center justify-center gap-4" style="animation-delay:0.6s">
+        <a
+          href="#about"
+          class="inline-flex items-center gap-2 px-6 py-3 bg-chocolate-700 hover:bg-chocolate-800 text-cream-50 font-semibold rounded-full transition-all shadow-hill hover:shadow-hill-lg"
+        >
+          {t.hero.exploreCta}
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </a>
+        <a
+          href={fullMapsUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 px-6 py-3 border border-cream-300 text-cream-200 hover:bg-cream-50/10 rounded-full transition-all font-medium"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+          {t.hero.mapsCta}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. QUICK FACTS -->
+  <section class="relative z-10 -mt-20 pb-12">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div class="bg-cream-50 rounded-ch shadow-hill p-4 text-center">
+          <div class="text-2xl mb-1">🎟️</div>
+          <div class="text-sm font-semibold text-chocolate-800">{feeLabel(ATTRACTION.entranceFee.adult)}</div>
+          <div class="text-xs text-chocolate-500">{t.quickFacts.adultEntry}</div>
+        </div>
+        <div class="bg-cream-50 rounded-ch shadow-hill p-4 text-center">
+          <div class="text-2xl mb-1">🕗</div>
+          <div class="text-sm font-semibold text-chocolate-800">{ATTRACTION.hours}</div>
+          <div class="text-xs text-chocolate-500">{t.quickFacts.openDaily}</div>
+        </div>
+        <div class="bg-cream-50 rounded-ch shadow-hill p-4 text-center">
+          <div class="text-2xl mb-1">⭐</div>
+          <div class="text-sm font-semibold text-chocolate-800">{ATTRACTION.rating} / 5</div>
+          <div class="text-xs text-chocolate-500">{ATTRACTION.reviewCount.toLocaleString()} {t.quickFacts.reviews}</div>
+        </div>
+        <div class="bg-cream-50 rounded-ch shadow-hill p-4 text-center">
+          <div class="text-2xl mb-1">🦶</div>
+          <div class="text-sm font-semibold text-chocolate-800">{ATTRACTION.steps} Steps</div>
+          <div class="text-xs text-chocolate-500">{t.quickFacts.stepsLabel}</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. ABOUT -->
+  <section id="about" class="py-16 md:py-20 bg-white">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="grid md:grid-cols-2 gap-10 items-center">
+        <div>
+          <span class="text-leaf-600 font-semibold text-sm uppercase tracking-wider">{t.about.eyebrow}</span>
+          <h2 class="text-3xl md:text-4xl font-display font-bold text-chocolate-900 mt-2 mb-4">
+            {t.about.heading}
+          </h2>
+          <p class="text-chocolate-700 mb-4 leading-relaxed" set:html={replace(t.about.p1, { name: ATTRACTION.name, hillCount: ATTRACTION.hillCount.toLocaleString(), hillArea: ATTRACTION.hillArea })} />
+          <p class="text-chocolate-700 mb-4 leading-relaxed" set:html={replace(t.about.p2, { hillHeight: ATTRACTION.hillHeight })} />
+          <p class="text-chocolate-600 text-sm leading-relaxed">{t.about.p3}</p>
+        </div>
+        <div class="relative">
+          <img
+            src="/gallery/chocolate-hills-2.jpg"
+            alt={t.gallery.altTemplate.replace('{n}', '2')}
+            class="rounded-ch shadow-hill-lg w-full object-cover"
+            style="aspect-ratio: 4/3;"
+            loading="lazy"
+            width="800"
+            height="600"
+          />
+          <div class="absolute -bottom-4 -left-4 bg-cream-100 border border-cream-300 rounded-xl px-4 py-3 shadow-hill text-sm">
+            <span class="text-chocolate-800 font-bold text-xl">{ATTRACTION.hillCount.toLocaleString()}+</span><br />
+            <span class="text-chocolate-600">{t.about.badgeConical}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. PHOTO GALLERY -->
+  <section id="gallery" class="py-16 md:py-20 bg-cream-100">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="text-center mb-10">
+        <span class="text-leaf-600 font-semibold text-sm uppercase tracking-wider">{t.gallery.eyebrow}</span>
+        <h2 class="text-3xl md:text-4xl font-display font-bold text-chocolate-900 mt-2">
+          {t.gallery.heading}
+        </h2>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+        {photos.map((photo, i) => (
+          <a
+            href={photo.src}
+            class="gallery-item block overflow-hidden rounded-lg shadow-hill hover:shadow-hill-lg transition-all hover:-translate-y-1 cursor-pointer"
+            data-index={i}
+          >
+            <img
+              src={photo.src}
+              alt={photo.alt}
+              width={photo.width}
+              height={photo.height}
+              loading="lazy"
+              decoding="async"
+              class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+              style="aspect-ratio:3/2;"
+            />
+          </a>
+        ))}
+      </div>
+      <p class="text-center text-xs text-chocolate-500 mt-4">{t.gallery.clickEnlarge}</p>
+    </div>
+
+    <div id="lightbox" class="fixed inset-0 z-[100] bg-chocolate-950/95 hidden items-center justify-center" role="dialog" aria-hidden="true">
+      <button id="lightbox-close" class="absolute top-4 right-4 text-cream-50 hover:text-cream-300 p-2 z-10 transition-colors" aria-label={t.lightbox.close}>
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+      <button id="lightbox-prev" class="absolute left-4 text-cream-50 hover:text-cream-300 p-2 z-10 transition-colors" aria-label={t.lightbox.previous}>
+        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+      <button id="lightbox-next" class="absolute right-4 text-cream-50 hover:text-cream-300 p-2 z-10 transition-colors" aria-label={t.lightbox.next}>
+        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+      <img id="lightbox-img" src="" alt="" class="max-w-[90vw] max-h-[85vh] object-contain rounded-lg" />
+    </div>
+
+    <script>
+      const lightbox = document.getElementById('lightbox')!;
+      const lightboxImg = document.getElementById('lightbox-img') as HTMLImageElement;
+      const closeBtn = document.getElementById('lightbox-close')!;
+      const prevBtn = document.getElementById('lightbox-prev')!;
+      const nextBtn = document.getElementById('lightbox-next')!;
+      const items = document.querySelectorAll('.gallery-item') as NodeListOf<HTMLAnchorElement>;
+      let currentIdx = 0;
+
+      function show(idx: number) {
+        currentIdx = (idx + items.length) % items.length;
+        lightboxImg.src = items[currentIdx].href;
+        lightboxImg.alt = items[currentIdx].querySelector('img')?.alt || '';
+        lightbox.classList.remove('hidden');
+        lightbox.classList.add('flex');
+        lightbox.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function hide() {
+        lightbox.classList.add('hidden');
+        lightbox.classList.remove('flex');
+        lightbox.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+      }
+
+      items.forEach((item, i) => item.addEventListener('click', (e) => { e.preventDefault(); show(i); }));
+      closeBtn.addEventListener('click', hide);
+      prevBtn.addEventListener('click', (e) => { e.stopPropagation(); show(currentIdx - 1); });
+      nextBtn.addEventListener('click', (e) => { e.stopPropagation(); show(currentIdx + 1); });
+      lightbox.addEventListener('click', (e) => { if (e.target === lightbox) hide(); });
+      document.addEventListener('keydown', (e) => {
+        if (lightbox.getAttribute('aria-hidden') === 'true') return;
+        if (e.key === 'Escape') hide();
+        if (e.key === 'ArrowLeft') show(currentIdx - 1);
+        if (e.key === 'ArrowRight') show(currentIdx + 1);
+      });
+    </script>
+  </section>
+
+  <!-- 5. TICKETS & ENTRANCE FEES -->
+  <section id="fees" class="py-16 md:py-20 bg-white">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="text-center mb-10">
+        <span class="text-leaf-600 font-semibold text-sm uppercase tracking-wider">{t.fees.eyebrow}</span>
+        <h2 class="text-3xl md:text-4xl font-display font-bold text-chocolate-900 mt-2">
+          {t.fees.heading}
+        </h2>
+        <p class="text-chocolate-600 mt-3 max-w-2xl mx-auto" set:html={replace(t.fees.subheading, { hoursDays: ATTRACTION.hoursDays.toLowerCase(), hours: ATTRACTION.hours })} />
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 max-w-4xl mx-auto">
+        <div class="bg-cream-100 rounded-ch p-6 text-center shadow-hill">
+          <div class="text-4xl mb-3">🧑</div>
+          <h3 class="font-bold text-chocolate-800 text-lg">{t.fees.adult}</h3>
+          <p class="text-3xl font-display font-bold text-chocolate-700 mt-1">{feeLabel(ATTRACTION.entranceFee.adult)}</p>
+          <p class="text-xs text-chocolate-500 mt-1">{t.fees.nonResident}</p>
+        </div>
+        <div class="bg-cream-100 rounded-ch p-6 text-center shadow-hill">
+          <div class="text-4xl mb-3">👧</div>
+          <h3 class="font-bold text-chocolate-800 text-lg">{t.fees.child}</h3>
+          <p class="text-3xl font-display font-bold text-chocolate-700 mt-1">{feeLabel(ATTRACTION.entranceFee.child)}</p>
+          <p class="text-xs text-chocolate-500 mt-1">{t.fees.nonResident}</p>
+        </div>
+        <div class="bg-leaf-50 rounded-ch p-6 text-center shadow-hill">
+          <div class="text-4xl mb-3">👴</div>
+          <h3 class="font-bold text-chocolate-800 text-lg">{t.fees.senior}</h3>
+          <p class="text-3xl font-display font-bold text-leaf-600 mt-1">{feeLabel(ATTRACTION.entranceFee.senior)}</p>
+          <p class="text-xs text-chocolate-500 mt-1">{t.fees.withId}</p>
+        </div>
+      </div>
+      <p class="text-center text-xs text-chocolate-400 mt-6">{t.fees.notice}</p>
+    </div>
+  </section>
+
+  <!-- 6. BEST TIME TO VISIT -->
+  <section id="best-time" class="py-16 md:py-20 bg-cream-100">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="grid md:grid-cols-2 gap-10 items-center">
+        <div>
+          <img
+            src="/gallery/chocolate-hills-4.jpg"
+            alt={t.gallery.altTemplate.replace('{n}', '4')}
+            class="rounded-ch shadow-hill-lg w-full object-cover"
+            style="aspect-ratio:4/3;"
+            loading="lazy"
+            width="800"
+            height="600"
+          />
+        </div>
+        <div>
+          <span class="text-leaf-600 font-semibold text-sm uppercase tracking-wider">{t.bestTime.eyebrow}</span>
+          <h2 class="text-3xl md:text-4xl font-display font-bold text-chocolate-900 mt-2 mb-4">{t.bestTime.heading}</h2>
+          <div class="space-y-4">
+            <div class="flex gap-3">
+              <div class="w-10 h-10 rounded-full bg-leaf-100 flex items-center justify-center flex-shrink-0 text-lg">🌤️</div>
+              <div>
+                <h3 class="font-semibold text-chocolate-800">{t.bestTime.seasonTitle.replace('{season}', ATTRACTION.bestSeason)}</h3>
+                <p class="text-sm text-chocolate-600">{t.bestTime.seasonText}</p>
+              </div>
+            </div>
+            <div class="flex gap-3">
+              <div class="w-10 h-10 rounded-full bg-leaf-100 flex items-center justify-center flex-shrink-0 text-lg">🌅</div>
+              <div>
+                <h3 class="font-semibold text-chocolate-800">{t.bestTime.timeTitle.replace('{time}', ATTRACTION.bestTimeOfDay)}</h3>
+                <p class="text-sm text-chocolate-600">{t.bestTime.timeText}</p>
+              </div>
+            </div>
+            <div class="flex gap-3">
+              <div class="w-10 h-10 rounded-full bg-leaf-100 flex items-center justify-center flex-shrink-0 text-lg">⏱️</div>
+              <div>
+                <h3 class="font-semibold text-chocolate-800">{t.bestTime.durationTitle.replace('{duration}', ATTRACTION.visitDuration)}</h3>
+                <p class="text-sm text-chocolate-600">{t.bestTime.durationText}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. TRANSPORTATION -->
+  <section id="transport" class="py-16 md:py-20 bg-white">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="text-center mb-10">
+        <span class="text-leaf-600 font-semibold text-sm uppercase tracking-wider">{t.transport.eyebrow}</span>
+        <h2 class="text-3xl md:text-4xl font-display font-bold text-chocolate-900 mt-2">{t.transport.heading}</h2>
+        <p class="text-chocolate-600 mt-3 max-w-2xl mx-auto" set:html={replace(t.transport.subheading, { name: ATTRACTION.nearestAirport.name, distance: ATTRACTION.nearestAirport.distance, travelTime: ATTRACTION.nearestAirport.travelTime })} />
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto">
+        {transportOptions.map((opt) => (
+          <div class="bg-cream-100 rounded-ch p-5 shadow-hill">
+            <h3 class="font-bold text-chocolate-800 mb-2">{opt.mode}</h3>
+            <p class="text-sm text-chocolate-600 leading-relaxed">{opt.detail}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. PARKING -->
+  <section id="parking" class="py-16 md:py-20 bg-cream-100">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="max-w-3xl mx-auto text-center">
+        <span class="text-leaf-600 font-semibold text-sm uppercase tracking-wider">{t.parking.eyebrow}</span>
+        <h2 class="text-3xl md:text-4xl font-display font-bold text-chocolate-900 mt-2 mb-4">{t.parking.heading}</h2>
+        <div class="bg-white rounded-ch shadow-hill p-8 text-left">
+          <div class="flex items-center gap-4 mb-4">
+            <div class="w-14 h-14 rounded-full bg-chocolate-100 flex items-center justify-center flex-shrink-0 text-2xl">🚗</div>
+            <div>
+              <p class="font-semibold text-chocolate-800 text-lg">{t.parking.available}</p>
+              <p class="text-sm text-chocolate-600">{ATTRACTION.parking.capacity}</p>
+            </div>
+          </div>
+          <div class="flex gap-3 items-start mb-4">
+            <span class="text-leaf-600 font-bold mt-0.5">{t.parking.feeLabel}</span>
+            <span class="text-chocolate-700">{ATTRACTION.parking.fee}</span>
+          </div>
+          <div class="flex gap-3 items-start">
+            <span class="text-leaf-600 font-bold mt-0.5">{t.parking.tipsLabel}</span>
+            <span class="text-chocolate-700 text-sm">{ATTRACTION.parking.tips || t.parking.tips}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. GOOGLE MAPS EMBED -->
+  <section id="map" class="py-16 md:py-20 bg-white">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="text-center mb-8">
+        <span class="text-leaf-600 font-semibold text-sm uppercase tracking-wider">{t.map.eyebrow}</span>
+        <h2 class="text-3xl md:text-4xl font-display font-bold text-chocolate-900 mt-2 mb-2">{t.map.heading}</h2>
+        <p class="text-chocolate-600">{ATTRACTION.addressStreet}, {ATTRACTION.addressCity}, {ATTRACTION.addressRegion}</p>
+      </div>
+      <div class="rounded-ch overflow-hidden shadow-hill-lg">
+        <iframe
+          src={embedSrc}
+          width="100%"
+          height="450"
+          style="border:0;"
+          allowfullscreen
+          loading="lazy"
+          referrerpolicy="strict-origin-when-cross-origin"
+          title={t.map.iframeTitle}
+        ></iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10. NEARBY FOOD -->
+  <section id="food" class="py-16 md:py-20 bg-cream-100">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="text-center mb-10">
+        <span class="text-leaf-600 font-semibold text-sm uppercase tracking-wider">{t.food.eyebrow}</span>
+        <h2 class="text-3xl md:text-4xl font-display font-bold text-chocolate-900 mt-2">{t.food.heading}</h2>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 max-w-5xl mx-auto">
+        {foodList.map((food) => (
+          <div class="bg-white rounded-ch shadow-hill p-5 hover:shadow-hill-lg transition-all hover:-translate-y-1">
+            <div class="flex items-start justify-between mb-2">
+              <h3 class="font-bold text-chocolate-800">{food.name}</h3>
+              <span class="text-xs bg-cream-200 text-chocolate-700 px-2 py-0.5 rounded-full whitespace-nowrap ml-2">{food.distance}</span>
+            </div>
+            <p class="text-xs text-leaf-600 font-medium mb-2">{food.type}</p>
+            <p class="text-sm text-chocolate-600 leading-relaxed">{food.detail}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 11. NEARBY ATTRACTIONS -->
+  <section id="nearby" class="py-16 md:py-20 bg-white">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="text-center mb-10">
+        <span class="text-leaf-600 font-semibold text-sm uppercase tracking-wider">{t.nearby.eyebrow}</span>
+        <h2 class="text-3xl md:text-4xl font-display font-bold text-chocolate-900 mt-2">{t.nearby.heading}</h2>
+        <p class="text-chocolate-600 mt-3 max-w-2xl mx-auto">{t.nearby.subheading}</p>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
+        {nearbyList.map((spot) => (
+          <div class="bg-cream-100 rounded-ch shadow-hill p-5 hover:shadow-hill-lg transition-all hover:-translate-y-1">
+            <span class="inline-block text-xs bg-chocolate-100 text-chocolate-700 px-2 py-0.5 rounded-full mb-2">{spot.distance}</span>
+            <h3 class="font-bold text-chocolate-800 mb-2">{spot.name}</h3>
+            <p class="text-sm text-chocolate-600 leading-relaxed">{spot.detail}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 12. ITINERARY CHECKLIST -->
+  <section id="itinerary" class="py-16 md:py-20 bg-cream-100">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="text-center mb-10">
+        <span class="text-leaf-600 font-semibold text-sm uppercase tracking-wider">{t.itinerary.eyebrow}</span>
+        <h2 class="text-3xl md:text-4xl font-display font-bold text-chocolate-900 mt-2">{t.itinerary.heading}</h2>
+        <p class="text-chocolate-600 mt-3 max-w-2xl mx-auto">{t.itinerary.subheading}</p>
+      </div>
+      <div class="max-w-2xl mx-auto" id="checklist-container">
+        <div class="bg-white rounded-ch shadow-hill p-6">
+          <ul class="space-y-3" id="checklist-list">
+            {checklist.map((item) => (
+              <li>
+                <label class="flex items-center gap-3 cursor-pointer group">
+                  <input type="checkbox" class="checklist-checkbox w-5 h-5 rounded border-chocolate-300 text-leaf-600 focus:ring-leaf-500" value={item.id} />
+                  <span class="text-sm text-chocolate-700 group-hover:text-chocolate-900 transition-colors">{item.label}</span>
+                </label>
+              </li>
+            ))}
+          </ul>
+          <div class="mt-6 pt-4 border-t border-cream-200 flex items-center justify-between">
+            <span id="checklist-count" class="text-xs text-chocolate-500">0 {t.itinerary.ofSelected.replace('{total}', String(checklist.length))}</span>
+            <button id="checklist-clear" class="text-xs text-chocolate-600 hover:text-chocolate-800 underline transition-colors">
+              {t.itinerary.clearAll}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const STORAGE_KEY = `chocolate-hills-checklist-${document.documentElement.lang}`;
+      const checkboxes = document.querySelectorAll('.checklist-checkbox') as NodeListOf<HTMLInputElement>;
+      const countEl = document.getElementById('checklist-count')!;
+      const clearBtn = document.getElementById('checklist-clear')!;
+
+      function loadState() {
+        try {
+          const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+          if (!Array.isArray(saved)) return [];
+          return saved;
+        } catch { return []; }
+      }
+      function saveState(state: string[]) { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+      function updateCount() {
+        const checked = Array.from(checkboxes).filter(cb => cb.checked).length;
+        const total = checkboxes.length;
+        const tmpl = countEl.getAttribute('data-count-template') ?? `${checked} of ${total} selected`;
+        countEl.textContent = tmpl.replace('{checked}', String(checked)).replace('{total}', String(total));
+      }
+
+      if (!countEl.getAttribute('data-count-template')) {
+        countEl.setAttribute('data-count-template', countEl.textContent || `{checked} of {total} selected`);
+      }
+      const saved = loadState();
+      checkboxes.forEach(cb => { cb.checked = saved.includes(cb.value); });
+      updateCount();
+      checkboxes.forEach(cb => {
+        cb.addEventListener('change', () => {
+          saveState(Array.from(checkboxes).filter(c => c.checked).map(c => c.value));
+          updateCount();
+        });
+      });
+      clearBtn.addEventListener('click', () => {
+        checkboxes.forEach(cb => { cb.checked = false; });
+        saveState([]);
+        updateCount();
+      });
+    </script>
+  </section>
+
+  <!-- 13. FAQ -->
+  <section id="faq" class="py-16 md:py-20 bg-white">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="text-center mb-10">
+        <span class="text-leaf-600 font-semibold text-sm uppercase tracking-wider">{t.faq.eyebrow}</span>
+        <h2 class="text-3xl md:text-4xl font-display font-bold text-chocolate-900 mt-2">{t.faq.heading}</h2>
+      </div>
+      <div class="max-w-3xl mx-auto space-y-3" id="faq-list">
+        {faqs.map((faq, i) => (
+          <div class="bg-cream-100 rounded-ch overflow-hidden shadow-hill">
+            <button
+              class="faq-toggle w-full flex items-center justify-between px-6 py-4 text-left font-semibold text-chocolate-800 hover:text-chocolate-900 transition-colors"
+              data-index={i}
+              aria-expanded="false"
+            >
+              <span class="pr-4">{faq.q}</span>
+              <svg class="w-5 h-5 flex-shrink-0 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            <div class="faq-answer hidden px-6 pb-4 text-sm text-chocolate-600 leading-relaxed">{faq.a}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <script>
+      document.querySelectorAll('.faq-toggle').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const answer = btn.nextElementSibling as HTMLElement;
+          const icon = btn.querySelector('svg')!;
+          const isOpen = !answer.classList.contains('hidden');
+          answer.classList.toggle('hidden', isOpen);
+          icon.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+          btn.setAttribute('aria-expanded', String(!isOpen));
+        });
+      });
+    </script>
+  </section>
+</BaseLayout>
+
+<!-- JSON-LD Structured Data -->
+<script is:inline type="application/ld+json" set:html={JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'TouristAttraction',
+  name: ATTRACTION.name,
+  description: t._meta.siteDescription,
+  inLanguage: t._meta.htmlLang,
+  url: SITE.url ? new URL(currentPath, SITE.url).href : undefined,
+  image: SITE.url ? `${SITE.url}/gallery/chocolate-hills-1.jpg` : '/gallery/chocolate-hills-1.jpg',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: ATTRACTION.addressStreet,
+    addressLocality: ATTRACTION.addressCity,
+    addressRegion: ATTRACTION.addressRegion,
+    addressCountry: ATTRACTION.addressCountry,
+    postalCode: ATTRACTION.addressPostal,
+  },
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: ATTRACTION.lat,
+    longitude: ATTRACTION.lng,
+  },
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: ATTRACTION.rating,
+    reviewCount: ATTRACTION.reviewCount,
+    bestRating: 5,
+    worstRating: 1,
+  },
+  openingHoursSpecification: {
+    '@type': 'OpeningHoursSpecification',
+    dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+    opens: '08:00',
+    closes: '17:30',
+  },
+  sameAs: [ATTRACTION.maps.share, ATTRACTION.maps.coords],
+  touristType: ['Nature Lovers', 'Photographers', 'Families', 'Adventure Seekers'],
+  telephone: ATTRACTION.phone,
+})} />
+
+<script is:inline type="application/ld+json" set:html={JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  inLanguage: t._meta.htmlLang,
+  mainEntity: faqs.map((faq) => ({
+    '@type': 'Question',
+    name: faq.q,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: faq.a,
+    },
+  })),
+})} />

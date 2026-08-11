@@ -1,0 +1,39 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import GA4 from '../components/GA4.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+import { getDictionary, type LocaleCode } from '../i18n';
+
+const props = Astro.props as {
+  locale: LocaleCode | string;
+  currentPath?: string;
+  title?: string;
+  description?: string;
+};
+const locale = (props.locale ?? 'fil') as LocaleCode;
+const currentPath = props.currentPath ?? '/';
+const t = getDictionary(locale);
+
+const title = props.title ?? t._meta.siteTitle;
+const description = props.description ?? t._meta.siteDescription;
+---
+
+<!doctype html>
+<html lang={t._meta.htmlLang} class="scroll-smooth">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <BaseHead locale={locale} currentPath={currentPath} title={title} description={description} />
+    <GA4 />
+  </head>
+  <body id="top" class="bg-cream-50 text-chocolate-950 font-sans antialiased">
+    <Navbar locale={locale} currentPath={currentPath} siteTitle={t._meta.siteTitleShort} />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer locale={locale} />
+  </body>
+</html>

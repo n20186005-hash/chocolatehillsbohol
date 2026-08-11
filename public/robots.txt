@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Hindi payagan ang mga crawler na i-index ang mga pansamantalang file
+Disallow: /*.DS_Store
+Disallow: /node_modules/
+
+# Lokasyon ng site map (sitemap)
+Sitemap: https://burnhamparkbaguio.com/sitemap-index.xml

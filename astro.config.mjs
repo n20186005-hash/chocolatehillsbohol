@@ -11,4 +11,11 @@ export default defineConfig({
   ],
   output: 'static',
   adapter: cloudflare(),
+  i18n: {
+    defaultLocale: 'fil',
+    locales: ['fil', 'en'],
+    routing: {
+      prefixDefaultLocale: false,
+    },
+  },
 });

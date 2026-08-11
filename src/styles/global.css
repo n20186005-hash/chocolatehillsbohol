@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply font-sans bg-cream-50 text-chocolate-950 antialiased;
+    line-height: 1.75;
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-leaf-600 ring-offset-2 ring-offset-cream-50 rounded;
+  }
+
+  ::selection {
+    @apply bg-chocolate-700 text-cream-50;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-sans font-semibold text-chocolate-900 tracking-tight;
+  }
+
+  h1 { @apply text-3xl sm:text-4xl md:text-5xl leading-tight; }
+  h2 { @apply text-2xl sm:text-3xl md:text-4xl leading-tight; }
+  h3 { @apply text-xl sm:text-2xl md:text-3xl leading-snug; }
+  h4 { @apply text-lg sm:text-xl md:text-2xl leading-snug; }
+}
+
+@layer components {
+  .container-page {
+    @apply container max-w-6xl mx-auto;
+  }
+
+  .card {
+    @apply bg-white rounded-ch shadow-hill;
+  }
+
+  .card-hover {
+    @apply transition-transform duration-300 ease-out hover:-translate-y-1 hover:shadow-hill-lg;
+  }
+
+  .section-pad {
+    @apply py-12 sm:py-16 md:py-20;
+  }
+}
+
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+  .pretty { text-wrap: pretty; }
+  .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+}

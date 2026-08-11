@@ -1,0 +1,65 @@
+---
+import { SITE, ATTRACTION } from '../consts';
+import { getDictionary, localizePath, type LocaleCode } from '../i18n';
+
+const props = Astro.props as {
+  locale: LocaleCode | string;
+  currentPath: string;
+  title: string;
+  description: string;
+};
+const locale = (props.locale ?? 'fil') as LocaleCode;
+const t = getDictionary(locale);
+const currentPath = props.currentPath || '/';
+
+function alternateHref(target: LocaleCode): string {
+  const rel = localizePath(currentPath, target);
+  if (SITE.url) return new URL(rel, SITE.url).href;
+  return rel;
+}
+---
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+<!-- Favicons -->
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+<!-- Canonical -->
+{
+  SITE.url && (
+    <link rel="canonical" href={new URL(localizePath(currentPath, locale), SITE.url).href} />
+  )
+}
+
+<!-- Hreflang alternates (i18n SEO) -->
+<link rel="alternate" hreflang="fil" href={alternateHref('fil')} />
+<link rel="alternate" hreflang="en" href={alternateHref('en')} />
+<link rel="alternate" hreflang="x-default" href={alternateHref('fil')} />
+
+<!-- Open Graph -->
+{
+  SITE.url
+    ? (
+      <>
+        <meta property="og:url" content={new URL(localizePath(currentPath, locale), SITE.url).href} />
+        <meta property="og:image" content={new URL('/og-default.svg', SITE.url).href} />
+      </>
+    )
+    : <meta property="og:image" content="/og-default.svg" />
+}
+<meta property="og:type" content="website" />
+<meta property="og:title" content={t._meta.siteTitle} />
+<meta property="og:description" content={t._meta.siteDescription} />
+<meta property="og:locale" content={t._meta.ogLocale} />
+<meta property="og:locale:alternate" content="fil_PH" />
+<meta property="og:locale:alternate" content="en_PH" />
+<meta property="og:site_name" content={t._meta.siteTitle} />
+<meta property="og:latitude" content={String(ATTRACTION.lat)} />
+<meta property="og:longitude" content={String(ATTRACTION.lng)} />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={t._meta.siteTitle} />
+<meta name="twitter:description" content={t._meta.siteDescription} />

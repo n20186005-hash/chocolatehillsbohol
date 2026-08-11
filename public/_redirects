@@ -1,0 +1,12 @@
+# Mga permanenteng redirect (301) para sa karaniwang pagkakamali ng URL
+/home       /              301
+/about      /kasaysayan/   301
+/travel     /pagbiyahe/    301
+/plan       /plano/        301
+/itinerary  /plano/        301
+/history    /kasaysayan/   301
+/visit      /oras/         301
+/food       /pagkain/      301
+/hotel      /matutuluyan/  301
+/stay       /matutuluyan/  301
+# Walang 404 fallback — hayaan ang Astro na humawak nito

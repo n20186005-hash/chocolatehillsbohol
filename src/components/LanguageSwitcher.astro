@@ -1,0 +1,61 @@
+---
+import { localizePath, localeNames, type LocaleCode } from '../i18n';
+
+const props = Astro.props as {
+  locale: LocaleCode | string;
+  currentPath: string;
+};
+const locale = (props.locale ?? 'fil') as LocaleCode;
+const currentPath = props.currentPath || '/';
+
+const locales: LocaleCode[] = ['fil', 'en'];
+---
+
+<div class="relative group/lang-switcher">
+  <button
+    type="button"
+    class="flex items-center gap-1.5 px-2.5 py-2 rounded-lg text-sm font-medium text-chocolate-700 hover:text-chocolate-900 hover:bg-chocolate-100 transition-colors"
+    aria-haspopup="listbox"
+    aria-expanded="false"
+  >
+    <span class="text-base leading-none">{localeNames[locale].flag}</span>
+    <span class="uppercase tracking-wider text-xs">{locale}</span>
+    <svg class="w-3.5 h-3.5 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+    </svg>
+  </button>
+
+  <ul
+    role="listbox"
+    class="absolute right-0 top-full mt-1 w-40 bg-cream-50 rounded-lg shadow-lg border border-chocolate-100 py-1 opacity-0 invisible -translate-y-1 group-hover/lang-switcher:opacity-100 group-hover/lang-switcher:visible group-hover/lang-switcher:translate-y-0 transition-all duration-200 z-50"
+  >
+    {
+      locales.map((code) => {
+        const active = code === locale;
+        return (
+          <li>
+            <a
+              href={localizePath(currentPath, code)}
+              rel="alternate"
+              hreflang={code}
+              class={`flex items-center gap-2 px-3 py-2 text-sm transition-colors ${
+                active
+                  ? 'bg-chocolate-100 text-chocolate-900 font-semibold'
+                  : 'text-chocolate-700 hover:bg-chocolate-50 hover:text-chocolate-900'
+              }`}
+              aria-selected={active ? 'true' : 'false'}
+            >
+              <span class="text-base leading-none">{localeNames[code].flag}</span>
+              <span class="flex-1">{localeNames[code].native}</span>
+              {active && (
+                <svg class="w-4 h-4 text-leaf-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+              )}
+            </a>
+          </li>
+        );
+      })
+    }
+  </ul>
+</div>
