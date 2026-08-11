@@ -18,6 +18,7 @@ export default defineConfig({
   }),
   build: {
     format: 'directory',
+    assets: 'assets', // 避免 Wrangler 忽略 _astro 目录（下划线前缀会被默认跳过）
   },
   i18n: {
     defaultLocale: 'fil',
