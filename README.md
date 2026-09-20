@@ -53,6 +53,25 @@ All commands are run from the root of the project, from a terminal:
 | `pnpm preview`         | Preview your build locally, before deploying     |
 | `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
 | `pnpm astro -- --help` | Get help using the Astro CLI                     |
+| `pnpm optimize:images` | Resize, compress and rename gallery photos       |
+
+## ☁️ Manual deployment (Cloudflare Workers)
+
+The site runs as a Cloudflare **Worker** with static assets (`output: 'server'`, `@astrojs/cloudflare`).
+
+1. `pnpm install`
+2. `pnpm run build` → worker bundle in `dist/_worker.js`, static assets in `./dist`
+3. `npx wrangler login` (once), then `npx wrangler deploy` — or `pnpm run deploy`
+
+`wrangler.toml` already points `main` at `dist/_worker.js/index.js` and serves assets from `./dist`.
+Files that must never be uploaded (dependencies, build output, local secrets) are listed in `.gitignore`.
+
+## 🖼️ Image guidelines
+
+Gallery photos live in `public/gallery/` and follow the naming pattern
+`chocolate-hills-carmen-bohol-<n>.jpg`. Run `pnpm optimize:images` after adding new
+photos — it caps the longest edge at 1600 px, re-encodes as progressive JPEG (quality 76)
+and removes metadata, which keeps page weight low.
 
 ## 👀 Want to learn more?
 

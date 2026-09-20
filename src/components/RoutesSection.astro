@@ -1,0 +1,42 @@
+---
+import { getDictionary, type LocaleCode } from '../i18n';
+
+const props = Astro.props as { locale: LocaleCode | string };
+const locale = (props.locale ?? 'en') as LocaleCode;
+const t = getDictionary(locale);
+const plans = [t.routes.halfDay, t.routes.fullDay];
+---
+
+<!-- 推荐通用游览路线：半日 / 全日 -->
+<section id="routes" class="py-16 md:py-20 bg-cream-50">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="text-center mb-8">
+      <span class="text-leaf-600 font-semibold text-sm uppercase tracking-wider">{t.routes.eyebrow}</span>
+      <h2 class="text-3xl md:text-4xl font-display font-bold text-chocolate-900 mt-2">
+        {t.routes.heading}
+      </h2>
+      <p class="text-chocolate-600 mt-3 max-w-2xl mx-auto">{t.routes.intro}</p>
+    </div>
+
+    <div class="grid lg:grid-cols-2 gap-4">
+      {
+        plans.map((plan) => (
+          <article class="bg-white rounded-ch shadow-hill p-6">
+            <h3 class="font-bold text-chocolate-800 text-lg">{plan.title}</h3>
+            <p class="text-sm text-chocolate-600 mt-1">{plan.best}</p>
+            <ol class="mt-4 space-y-3">
+              {plan.stops.map((stop) => (
+                <li class="flex gap-3">
+                  <span class="font-display font-bold text-chocolate-700 w-12 flex-shrink-0">{stop.time}</span>
+                  <span class="text-sm text-chocolate-700 leading-relaxed">{stop.text}</span>
+                </li>
+              ))}
+            </ol>
+          </article>
+        ))
+      }
+    </div>
+
+    <p class="text-center text-xs text-chocolate-500 mt-6">{t.routes.note}</p>
+  </div>
+</section>

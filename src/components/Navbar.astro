@@ -7,7 +7,7 @@ const props = Astro.props as {
   currentPath: string;
   siteTitle: string;
 };
-const locale = (props.locale ?? 'fil') as LocaleCode;
+const locale = (props.locale ?? 'en') as LocaleCode;
 const t = getDictionary(locale);
 
 const links = [
@@ -15,6 +15,8 @@ const links = [
   { href: '#gallery', label: t.nav.gallery },
   { href: '#fees', label: t.nav.fees },
   { href: '#transport', label: t.nav.transport },
+  { href: '#weather', label: t.nav.weather },
+  { href: '#facilities', label: t.nav.facilities },
   { href: '#map', label: t.nav.map },
   { href: '#faq', label: t.nav.faq },
 ];

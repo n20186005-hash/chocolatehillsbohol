@@ -1,0 +1,196 @@
+---
+import { getDictionary, type LocaleCode } from '../i18n';
+import { buildAdvice, getWeather, weatherCodeKey } from '../lib/weather';
+
+const props = Astro.props as { locale: LocaleCode | string };
+const locale = (props.locale ?? 'en') as LocaleCode;
+const t = getDictionary(locale);
+const localeTag = locale === 'fil' ? 'fil-PH' : 'en-PH';
+
+const weather = await getWeather();
+const current = weather?.current ?? null;
+const today = weather?.daily[0] ?? null;
+const forecast = weather?.daily ?? [];
+const advice = weather ? buildAdvice(weather) : null;
+
+const codes = t.weather.codes as unknown as Record<string, string>;
+const riskTexts = t.weather.risk as unknown as Record<string, string>;
+const outfitTexts = t.weather.outfit as unknown as Record<string, string>;
+const planTexts = t.weather.plan as unknown as Record<string, string>;
+const itemTexts = t.weather.items as unknown as Record<string, string>;
+
+const codeLabel = (code: number) => codes[weatherCodeKey(code)] ?? codes.clear;
+
+const hasRisk = advice ? advice.risk.length > 0 : false;
+const riskBoxClass = hasRisk
+  ? 'bg-red-50 border border-red-200'
+  : 'bg-leaf-50 border border-leaf-100';
+const riskTitleClass = hasRisk ? 'text-red-700' : 'text-leaf-700';
+const rainWordText = advice ? t.weather.levels.rain[advice.rainWord] : '';
+const windWordText = advice ? t.weather.levels.wind[advice.windLevel] : '';
+const uvWordText = advice ? t.weather.levels.uv[advice.uvLevel] : '';
+
+const weekday = (date: string) =>
+  new Date(`${date}T12:00:00+08:00`).toLocaleDateString(localeTag, { weekday: 'short' });
+const dayNumber = (date: string) => Number(date.slice(8, 10));
+const round = (n: number) => Math.round(n);
+const updated = weather
+  ? new Date(weather.fetchedAt).toLocaleTimeString(localeTag, {
+      hour: '2-digit',
+      minute: '2-digit',
+      timeZone: 'Asia/Manila',
+    })
+  : '';
+---
+
+<section id="weather" class="py-16 md:py-20 bg-cream-50">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="text-center mb-8">
+      <span class="text-leaf-600 font-semibold text-sm uppercase tracking-wider">{t.weather.eyebrow}</span>
+      <h2 class="text-3xl md:text-4xl font-display font-bold text-chocolate-900 mt-2">
+        {t.weather.heading}
+      </h2>
+      <p class="text-chocolate-600 mt-3 max-w-2xl mx-auto">{t.weather.subheading}</p>
+    </div>
+
+    {
+      weather && current && today && advice && (
+        <div class="grid lg:grid-cols-5 gap-4">
+
+          <div class="lg:col-span-2 bg-white rounded-ch shadow-hill p-6">
+            <div class="flex items-start justify-between gap-4">
+              <div>
+                <p class="text-sm text-chocolate-500">{t.weather.nowLabel}</p>
+                <p class="text-5xl font-display font-bold text-chocolate-800 leading-none mt-1">
+                  {round(current.temperature)}°C
+                </p>
+                <p class="text-chocolate-700 mt-1">{codeLabel(current.code)}</p>
+                <p class="text-xs text-chocolate-500 mt-1">
+                  {t.weather.highLow}: {round(today.tempMax)}° / {round(today.tempMin)}°
+                </p>
+              </div>
+
+              <ul class="text-right text-sm space-y-2">
+                <li>
+                  <span class="block text-xs text-chocolate-500">{t.weather.feelsLike}</span>
+                  <span class="font-semibold text-chocolate-800">{round(current.apparentTemperature)}°C</span>
+                </li>
+                <li>
+                  <span class="block text-xs text-chocolate-500">{t.weather.rainChance}</span>
+                  <span class="font-semibold text-chocolate-800">{round(today.precipitationProbability)}%</span>
+                  <span class="block text-[11px] text-leaf-600">{rainWordText}</span>
+                </li>
+                <li>
+                  <span class="block text-xs text-chocolate-500">{t.weather.wind}</span>
+                  <span class="font-semibold text-chocolate-800">{round(current.windSpeed)} km/h</span>
+                  <span class="block text-[11px] text-chocolate-600">{windWordText}</span>
+                </li>
+                <li>
+                  <span class="block text-xs text-chocolate-500">{t.weather.uv}</span>
+                  <span class="font-semibold text-chocolate-800">{today.uvIndexMax.toFixed(0)}</span>
+                  <span class="block text-[11px] text-chocolate-600">{uvWordText}</span>
+                </li>
+              </ul>
+            </div>
+
+            <div class="flex gap-6 mt-5 pt-4 border-t border-cream-200 text-xs text-chocolate-500">
+              <span>{t.weather.sunrise}: <span class="font-semibold text-chocolate-800">{today.sunrise}</span></span>
+              <span>{t.weather.sunset}: <span class="font-semibold text-chocolate-800">{today.sunset}</span></span>
+            </div>
+
+            <p class="text-[11px] text-chocolate-500 mt-3">{t.weather.updatedAt.replace('{time}', updated)}</p>
+          </div>
+
+          <div class="lg:col-span-3 bg-white rounded-ch shadow-hill p-6">
+            <h3 class="font-bold text-chocolate-800 text-lg">{t.weather.adviceTitle}</h3>
+
+            <div class={`mt-3 rounded-ch px-4 py-3 ${riskBoxClass}`}>
+              <p class={`text-sm font-bold ${riskTitleClass}`}>
+                {hasRisk ? t.weather.groups.risk : t.weather.groups.none}
+              </p>
+              {hasRisk && (
+                <ul class="mt-2 space-y-2 text-sm text-red-700">
+                  {advice.risk.map((key) => (
+                    <li class="flex gap-2">
+                      <span aria-hidden="true">⚠</span>
+                      <span class="leading-relaxed">{riskTexts[key]}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
+            <div class="grid sm:grid-cols-3 gap-4 mt-4">
+              <div>
+                <h4 class="text-xs uppercase tracking-wider text-chocolate-500">{t.weather.groups.outfit}</h4>
+                <ul class="mt-2 space-y-2 text-sm text-chocolate-700">
+                  {advice.outfit.map((key) => (
+                    <li class="flex gap-2">
+                      <span aria-hidden="true" class="text-chocolate-400">•</span>
+                      <span class="leading-relaxed">{outfitTexts[key]}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div>
+                <h4 class="text-xs uppercase tracking-wider text-chocolate-500">{t.weather.groups.plan}</h4>
+                <ul class="mt-2 space-y-2 text-sm text-chocolate-700">
+                  {advice.plan.map((key) => (
+                    <li class="flex gap-2">
+                      <span aria-hidden="true" class="text-chocolate-400">•</span>
+                      <span class="leading-relaxed">{planTexts[key]}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div>
+                <h4 class="text-xs uppercase tracking-wider text-chocolate-500">{t.weather.groups.items}</h4>
+                <ul class="mt-2 flex flex-wrap gap-2">
+                  {advice.items.map((key) => (
+                    <li class="text-xs bg-cream-200 text-chocolate-700 rounded-full px-3 py-1">
+                      {itemTexts[key]}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            <p class="text-[11px] text-chocolate-500 mt-4 leading-relaxed">{t.weather.sceneNote}</p>
+          </div>
+        </div>
+      )
+    }
+
+    {
+      weather && forecast.length > 0 && (
+        <div class="mt-4 bg-white rounded-ch shadow-hill p-6">
+          <h3 class="font-bold text-chocolate-800 text-lg mb-4">{t.weather.forecastTitle}</h3>
+          <ul class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
+            {forecast.map((day, i) => (
+              <li class="text-center bg-cream-100 rounded-ch px-2 py-3">
+                <p class="text-xs font-semibold text-chocolate-700">
+                  {i === 0 ? t.weather.todayLabel : weekday(day.date)}
+                </p>
+                <p class="text-[11px] text-chocolate-500">{dayNumber(day.date)}</p>
+                <p class="text-lg font-display font-bold text-chocolate-800 mt-1">{round(day.tempMax)}°</p>
+                <p class="text-xs text-chocolate-500">{round(day.tempMin)}°</p>
+                <p class="text-[11px] text-chocolate-600 mt-1 leading-tight">{codeLabel(day.code)}</p>
+                <p class="text-[11px] text-leaf-600 mt-1">{round(day.precipitationProbability)}%</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )
+    }
+
+    {
+      !weather && (
+        <div class="max-w-3xl mx-auto bg-white rounded-ch shadow-hill p-6 text-center">
+          <p class="text-chocolate-600 text-sm">{t.weather.unavailable}</p>
+        </div>
+      )
+    }
+  </div>
+</section>

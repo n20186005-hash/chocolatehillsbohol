@@ -5,7 +5,7 @@ import { getDictionary, type LocaleCode } from '../i18n';
 const props = Astro.props as {
   locale: LocaleCode | string;
 };
-const locale = (props.locale ?? 'fil') as LocaleCode;
+const locale = (props.locale ?? 'en') as LocaleCode;
 const t = getDictionary(locale);
 ---
 
@@ -72,5 +72,8 @@ const t = getDictionary(locale);
         {t.footer.copyright.replace('{year}', String(new Date().getFullYear()))}
       </p>
     </div>
+    <p class="border-t border-chocolate-700 mt-6 pt-4 text-[11px] text-chocolate-500 leading-relaxed">
+      {t.footer.reviewNote}
+    </p>
   </div>
 </footer>

@@ -1,0 +1,52 @@
+{
+  "name": "Chocolate Hills Complex (Carmen) - Visitor Guide & Location",
+  "short_name": "Chocolate Hills",
+  "description": "Complete visitor guide to Chocolate Hills Complex in Carmen, Bohol, Philippines — location map, entrance fees, transport, gallery and travel tips.",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#FFFBF5",
+  "theme_color": "#6B341A",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["travel", "lifestyle"],
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Map & Location",
+      "url": "/#map",
+      "description": "Open the Google Maps embed and location details"
+    },
+    {
+      "name": "Tickets & Fees",
+      "url": "/#fees",
+      "description": "Entrance fees and opening hours"
+    },
+    {
+      "name": "FAQ",
+      "url": "/#faq",
+      "description": "Frequently asked questions"
+    }
+  ]
+}

@@ -1,14 +1,12 @@
 ---
-import { localizePath, localeNames, type LocaleCode } from '../i18n';
+import { locales, localizePath, localeNames, type LocaleCode } from '../i18n';
 
 const props = Astro.props as {
   locale: LocaleCode | string;
   currentPath: string;
 };
-const locale = (props.locale ?? 'fil') as LocaleCode;
+const locale = (props.locale ?? 'en') as LocaleCode;
 const currentPath = props.currentPath || '/';
-
-const locales: LocaleCode[] = ['fil', 'en'];
 ---
 
 <div class="relative group/lang-switcher">

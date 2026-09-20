@@ -1,24 +1,51 @@
-# build output
-dist/
-# generated types
-.astro/
-
-# dependencies
+# 依赖与包管理
 node_modules/
+.pnpm-store/
+.npmrc
+yarn.lock
+package-lock.json
 
-# logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
+# Astro / 构建产物
+dist/
+.astro/
+.output/
+.vercel/
+.netlify/
 
+# Cloudflare Workers
+.wrangler/
+.mf/
+*.wrangler
+dist/_worker.js/
 
-# environment variables
+# 环境变量与本地密钥（不要上传）
 .env
-.env.production
+.env.*
+.dev.vars
+wrangler.toml.bak
 
-# macOS-specific files
+# 日志与缓存
+*.log
+npm-debug.log*
+pnpm-debug.log*
+.cache/
+.eslintcache
 .DS_Store
+Thumbs.db
 
-# jetbrains setting folder
+# 编辑器与系统
+.vscode/*
+!.vscode/extensions.json
 .idea/
+*.swp
+*.swo
+*~
+
+# 临时脚本与本地校验产物
+.tmp-*
+astro.config.static.mjs
+dist-static/
+
+# Python 缓存（scripts/download_gallery.py）
+__pycache__/
+*.py[cod]

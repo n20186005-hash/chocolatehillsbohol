@@ -1,5 +1,5 @@
 ---
-import { SITE, ATTRACTION } from '../consts';
+import { SITE, ATTRACTION, ENTITY } from '../consts';
 import { getDictionary, localizePath, type LocaleCode } from '../i18n';
 
 const props = Astro.props as {
@@ -8,9 +8,12 @@ const props = Astro.props as {
   title: string;
   description: string;
 };
-const locale = (props.locale ?? 'fil') as LocaleCode;
+const locale = (props.locale ?? 'en') as LocaleCode;
 const t = getDictionary(locale);
 const currentPath = props.currentPath || '/';
+
+// LCP 预加载：首屏 Hero 图的 WebP 版本（比 JPG 小约 50%）
+const heroWebp = ATTRACTION.heroImage.replace(/\.jpe?g$/i, '-1400.webp');
 
 function alternateHref(target: LocaleCode): string {
   const rel = localizePath(currentPath, target);
@@ -29,7 +32,26 @@ function alternateHref(target: LocaleCode): string {
 
 <!-- Favicons -->
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png" />
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+
+<!-- LCP: preload 首屏 Hero 图（WebP） -->
+<link rel="preload" as="image" href={heroWebp} type="image/webp" fetchpriority="high" />
+
+<!-- PWA -->
+<link rel="manifest" href="/manifest.webmanifest" />
+<meta name="theme-color" content={SITE.themeColor} />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content={SITE.titleShort} />
+<meta name="application-name" content={SITE.titleShort} />
+<meta name="mobile-web-app-capable" content="yes" />
+
+<!-- Geo meta (实体坐标绑定) -->
+<meta name="geo.region" content="PH-BOH" />
+<meta name="geo.placename" content={`${ENTITY.cityName}, ${ENTITY.stateProvince}, ${ENTITY.countryName}`} />
+<meta name="geo.position" content={`${ENTITY.latitude};${ENTITY.longitude}`} />
+<meta name="ICBM" content={`${ENTITY.latitude}, ${ENTITY.longitude}`} />
 
 <!-- Canonical -->
 {
@@ -41,7 +63,8 @@ function alternateHref(target: LocaleCode): string {
 <!-- Hreflang alternates (i18n SEO) -->
 <link rel="alternate" hreflang="fil" href={alternateHref('fil')} />
 <link rel="alternate" hreflang="en" href={alternateHref('en')} />
-<link rel="alternate" hreflang="x-default" href={alternateHref('fil')} />
+<!-- x-default 指向英文版：国际游客（美/澳/日/新/德）搜索意图均为英文 -->
+<link rel="alternate" hreflang="x-default" href={alternateHref('en')} />
 
 <!-- Open Graph -->
 {
@@ -49,14 +72,19 @@ function alternateHref(target: LocaleCode): string {
     ? (
       <>
         <meta property="og:url" content={new URL(localizePath(currentPath, locale), SITE.url).href} />
-        <meta property="og:image" content={new URL('/og-default.svg', SITE.url).href} />
+        <meta property="og:image" content={new URL(ATTRACTION.heroImage, SITE.url).href} />
+        <meta property="og:image:secure_url" content={new URL(ATTRACTION.heroImage, SITE.url).href} />
+        <meta property="og:image:type" content="image/jpeg" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="800" />
+        <meta property="og:image:alt" content={t._meta.ogImageAlt} />
       </>
     )
-    : <meta property="og:image" content="/og-default.svg" />
+    : <meta property="og:image" content="/gallery/chocolate-hills-1.jpg" />
 }
 <meta property="og:type" content="website" />
-<meta property="og:title" content={t._meta.siteTitle} />
-<meta property="og:description" content={t._meta.siteDescription} />
+<meta property="og:title" content={t._meta.ogTitle} />
+<meta property="og:description" content={t._meta.ogDescription} />
 <meta property="og:locale" content={t._meta.ogLocale} />
 <meta property="og:locale:alternate" content="fil_PH" />
 <meta property="og:locale:alternate" content="en_PH" />
@@ -64,5 +92,7 @@ function alternateHref(target: LocaleCode): string {
 <meta property="og:latitude" content={String(ATTRACTION.lat)} />
 <meta property="og:longitude" content={String(ATTRACTION.lng)} />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content={t._meta.siteTitle} />
-<meta name="twitter:description" content={t._meta.siteDescription} />
+<meta name="twitter:title" content={t._meta.ogTitle} />
+<meta name="twitter:description" content={t._meta.ogDescription} />
+<meta name="twitter:image" content={SITE.url ? new URL(ATTRACTION.heroImage, SITE.url).href : ATTRACTION.heroImage} />
+<meta name="twitter:image:alt" content={t._meta.ogImageAlt} />

@@ -1,0 +1,34 @@
+---
+import { getDictionary, type LocaleCode } from '../i18n';
+
+const props = Astro.props as { locale: LocaleCode | string };
+const locale = (props.locale ?? 'en') as LocaleCode;
+const t = getDictionary(locale);
+---
+
+<!-- 访客服务与周边设施：按类型中立描述，不推荐具体商户 -->
+<section id="facilities" class="py-16 md:py-20 bg-cream-100">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="text-center mb-8">
+      <span class="text-leaf-600 font-semibold text-sm uppercase tracking-wider">{t.facilities.eyebrow}</span>
+      <h2 class="text-3xl md:text-4xl font-display font-bold text-chocolate-900 mt-2">
+        {t.facilities.heading}
+      </h2>
+      <p class="text-chocolate-600 mt-3 max-w-2xl mx-auto">{t.facilities.intro}</p>
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {
+        t.facilities.items.map((item) => (
+          <article class="bg-white rounded-ch shadow-hill p-5">
+            <h3 class="font-bold text-chocolate-800 text-base">{item.title}</h3>
+            <p class="text-sm text-chocolate-700 mt-2 leading-relaxed">{item.text}</p>
+            <p class="text-xs text-leaf-700 mt-3 leading-relaxed bg-leaf-50 rounded-ch px-3 py-2">{item.tip}</p>
+          </article>
+        ))
+      }
+    </div>
+
+    <p class="text-center text-xs text-chocolate-500 mt-6">{t.facilities.note}</p>
+  </div>
+</section>

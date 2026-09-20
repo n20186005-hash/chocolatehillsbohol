@@ -2,31 +2,62 @@
 export const SITE = {
   /** Leave empty for local dev; set before deploy. */
   url: 'https://chocolatehillsbohol.com',
-  title: 'Chocolate Hills Complex',
+  /** TDK：覆盖 GSC 高意图查询（entrance fee / opening hours / closing time / viewing deck / 2026） */
+  title: 'Chocolate Hills Bohol: Entrance Fee, Hours & Viewing Deck (2026)',
   titleShort: 'Chocolate Hills',
+  /** OG 模板：{{ATTRACTION_FULL_NAME}} - {{CITY_NAME}} Travel Guide */
+  ogTitle: 'Chocolate Hills Complex, Carmen Bohol — 2026 Visitor Guide',
+  ogDescription:
+    'Entrance fees, opening hours, the 214-step viewing deck, location map, transport and travel tips for Chocolate Hills Complex, Bohol.',
+  ogImageAlt: 'Chocolate Hills Complex viewing deck in Carmen, Bohol',
   tagline: 'Nature\'s Sweetest Masterpiece in Bohol, Philippines',
   description:
-    'Discover the iconic Chocolate Hills Complex in Carmen, Bohol — 1,268 cone-shaped limestone hills that turn chocolate brown in the dry season. Complete visitor guide with fees, transport, gallery, and travel tips.',
-  locale: 'fil',
-  ogLocale: 'fil_PH',
+    'Chocolate Hills Complex in Carmen, Bohol: ₱100 entrance fee, open daily 8:00 AM–5:30 PM, 214 steps to the viewing deck, address, map & photos. 2026 visitor guide.',
+  locale: 'en',
+  ogLocale: 'en_PH',
   logoAlt: 'Chocolate Hills Logo',
+  /** PWA */
+  themeColor: '#6B341A',
+  backgroundColor: '#FFFBF5',
+};
+
+/**
+ * 单景点 SEO 实体绑定变量表（对应模板占位符）。
+ * 站点为单景点站，所有实体语义均绑定在 Chocolate Hills Complex 这一个地理实体上。
+ */
+export const ENTITY = {
+  domainName: 'chocolatehillsbohol.com',
+  attractionFullName: 'Chocolate Hills Complex',
+  attractionShortName: 'Chocolate Hills',
+  cityName: 'Carmen',
+  stateProvince: 'Bohol',
+  countryName: 'Philippines',
+  countryCode2Letter: 'PH',
+  postalCode: '6319',
+  latitude: 9.7988,
+  longitude: 124.1648,
 };
 
 export const ATTRACTION = {
   name: 'Chocolate Hills Complex',
   nameLocal: 'Chocolate Hills',
-  addressStreet: 'Loay Interior Road, Q5X8+GW5',
+  /** alternateName：域名含义（短名）与「城市 + 全称」两种写法 */
+  alternateNames: ['Chocolate Hills', 'Carmen Chocolate Hills Complex'],
+  addressStreet: 'Q5X8+FX4, Loay Interior Road',
   addressCity: 'Carmen',
   addressRegion: 'Bohol',
   addressPostal: '6319',
   addressCountry: 'Philippines',
-  plusCode: 'Q5X8+GW5',
+  addressCountryCode: 'PH',
+  plusCode: 'Q5X8+FX4',
   lat: 9.7988,
   lng: 124.1648,
-  phone: '+639175557257',
+  phone: '+63180018887777',
   rating: 4.5,
-  reviewCount: 10349,
+  reviewCount: 10410,
   reviewPlatform: 'Google Maps',
+  /** 评价同步时间（用于页面来源标注，规避 Google 判违规） */
+  reviewSyncedAt: 'September 2026',
   hours: '8:00 AM – 5:30 PM',
   hoursDays: 'Daily (including holidays)',
   entranceFee: {
@@ -46,6 +77,29 @@ export const ATTRACTION = {
   bestTimeOfDay: '6:00 AM – 9:00 AM (cooler, fewer crowds)',
   viewDeckHeight: 'approximately 64 meters above base',
 
+  /** 周边核心地标（语义集群绑定用） */
+  nearbyLandmark1: 'Chocolate Hills Adventure Park',
+  nearbyLandmark2: 'Bilar Man-Made Forest',
+
+  /** 权威外链（政府 / 官方旅游局 / UNESCO），用于 E-E-A-T 与实体消歧 */
+  authorities: [
+    {
+      name: 'Philippine Department of Tourism',
+      url: 'https://www.tourism.gov.ph/',
+      note: 'National tourism portal of the Philippines',
+    },
+    {
+      name: 'Provincial Government of Bohol',
+      url: 'https://www.bohol.gov.ph/',
+      note: 'Provincial government of Bohol',
+    },
+    {
+      name: 'UNESCO World Heritage Tentative List — Chocolate Hills Natural Monument',
+      url: 'https://whc.unesco.org/en/tentativelists/5024/',
+      note: 'UNESCO tentative listing',
+    },
+  ],
+
   /** Four Google Maps links the page uses. */
   maps: {
     /** Short share link — Hero, Gallery, Footer anchors */
@@ -56,10 +110,19 @@ export const ATTRACTION = {
     embed: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3931.613091566882!2d124.16476907697863!3d9.798767690296602!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33aa16f89932b4ed%3A0xf893a780df0b83b0!2sChocolate%20Hills%20Complex!5e0!3m2!1sen!2sph!4v1786414261136!5m2!1sen!2sph',
   },
 
+  /** 图片命名规范：chocolate-hills-carmen-bohol-{序号}.jpg（已压缩，见 scripts/optimize-images.mjs） */
+  imageSlug: '/gallery/chocolate-hills-carmen-bohol',
+  /** 主视觉图（Hero / OG / JSON-LD 首图） */
+  heroImage: '/gallery/chocolate-hills-carmen-bohol-1.jpg',
+  /** About 区块配图 */
+  aboutImage: '/gallery/chocolate-hills-carmen-bohol-2.jpg',
+  /** 最佳季节区块配图 */
+  seasonImage: '/gallery/chocolate-hills-carmen-bohol-4.jpg',
+
   /** Photo gallery — real photos in /public/gallery/ */
-  photos: Array.from({ length: 12 }, (_, i) => ({
-    src: `/gallery/chocolate-hills-${i + 1}.jpg`,
-    alt: `Chocolate Hills view ${i + 1} — Carmen, Bohol, Philippines`,
+  photos: Array.from({ length: 14 }, (_, i) => ({
+    src: `/gallery/chocolate-hills-carmen-bohol-${i + 1}.jpg`,
+    alt: `Chocolate Hills Complex view ${i + 1} — Carmen, Bohol, Philippines`,
     width: 1200,
     height: 800,
   })),

@@ -1,12 +1,14 @@
-# Mga permanenteng redirect (301) para sa karaniwang pagkakamali ng URL
-/home       /              301
-/about      /kasaysayan/   301
-/travel     /pagbiyahe/    301
-/plan       /plano/        301
-/itinerary  /plano/        301
-/history    /kasaysayan/   301
-/visit      /oras/         301
-/food       /pagkain/      301
-/hotel      /matutuluyan/  301
-/stay       /matutuluyan/  301
-# Walang 404 fallback — hayaan ang Astro na humawak nito
+# Mga permanenteng redirect (301)
+# Tandaan: sa Cloudflare Workers (static assets) ang file na ito ay hindi pinoproseso —
+# ang aktuwal na redirect ay nasa src/middleware.ts. Nandito lang ito bilang fallback
+# kapag ang site ay i-host bilang Cloudflare Pages.
+/en              /              301
+/en/             /              301
+/fil             /fil/          301
+/home            /              301
+/kasaysayan/     /#history      301
+/pagbiyahe/      /#transport    301
+/plano/          /#itinerary    301
+/oras/           /#fees         301
+/pagkain/        /#food         301
+/matutuluyan/    /#facilities   301

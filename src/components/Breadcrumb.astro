@@ -1,0 +1,47 @@
+---
+import { ATTRACTION } from '../consts';
+import { getDictionary, type LocaleCode } from '../i18n';
+
+const props = Astro.props as { locale: LocaleCode | string };
+const locale = (props.locale ?? 'en') as LocaleCode;
+const t = getDictionary(locale);
+
+/**
+ * 4.2 地理面包屑与归属层级模板：
+ * {{ATTRACTION_FULL_NAME}} → {{CITY_NAME}} → {{STATE_PROVINCE}} → {{COUNTRY_NAME}}
+ */
+const trail = [
+  { label: t.breadcrumb.attraction, href: '#top', current: true },
+  { label: t.breadcrumb.city, href: null, current: false },
+  { label: t.breadcrumb.region, href: null, current: false },
+  { label: t.breadcrumb.country, href: null, current: false },
+];
+---
+
+<nav aria-label={t.breadcrumb.ariaLabel} class="w-full">
+  <ol class="flex flex-wrap items-center gap-1 text-xs text-chocolate-500">
+    <li class="flex items-center gap-1">
+      <a href="#top" class="hover:text-chocolate-800 hover:underline transition-colors">
+        {t.breadcrumb.home}
+      </a>
+      <span aria-hidden="true" class="text-chocolate-400">›</span>
+    </li>
+    {
+      trail.map((crumb, i) => (
+        <li class="flex items-center gap-1" aria-current={crumb.current ? 'page' : undefined}>
+          {crumb.href ? (
+            <a href={crumb.href} class="hover:text-chocolate-800 hover:underline transition-colors">
+              {crumb.label}
+            </a>
+          ) : (
+            <span>{crumb.label}</span>
+          )}
+          {i < trail.length - 1 && <span aria-hidden="true" class="text-chocolate-400">›</span>}
+        </li>
+      ))
+    }
+  </ol>
+  <p class="sr-only">
+    {ATTRACTION.name} → {ATTRACTION.addressCity} → {ATTRACTION.addressRegion} → {ATTRACTION.addressCountry}
+  </p>
+</nav>

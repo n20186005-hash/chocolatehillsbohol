@@ -1,14 +1,24 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { ATTRACTION, SITE } from '../consts';
-import { getDictionary, type LocaleCode } from '../i18n';
+import Breadcrumb from './Breadcrumb.astro';
+import ReviewsSection from './ReviewsSection.astro';
+import SourcesSection from './SourcesSection.astro';
+import WeatherSection from './WeatherSection.astro';
+import SeasonSection from './SeasonSection.astro';
+import FacilitiesSection from './FacilitiesSection.astro';
+import TransportRoutesSection from './TransportRoutesSection.astro';
+import RoutesSection from './RoutesSection.astro';
+import AudiencePlansSection from './AudiencePlansSection.astro';
+import ResponsibilitySection from './ResponsibilitySection.astro';
+import { ATTRACTION, ENTITY, SITE } from '../consts';
+import { getDictionary, localizePath, type LocaleCode } from '../i18n';
 
 const props = Astro.props as {
   locale: LocaleCode | string;
   currentPath?: string;
 };
-const locale = (props.locale ?? 'fil') as LocaleCode;
-const currentPath = props.currentPath ?? (locale === 'fil' ? '/' : '/en/');
+const locale = (props.locale ?? 'en') as LocaleCode;
+const currentPath = props.currentPath ?? (locale === 'fil' ? '/fil/' : '/');
 const t = getDictionary(locale);
 
 const faqs = t.faq.items;
@@ -42,12 +52,24 @@ const nearbyList = [
   { name: t.nearby.names.hinagdanan, distance: ATTRACTION.nearbyAttractions[6].distance, detail: t.nearby.details.hinagdanan },
   { name: t.nearby.names.panglao, distance: ATTRACTION.nearbyAttractions[7].distance, detail: t.nearby.details.panglao },
 ];
-const photos = Array.from({ length: 12 }, (_, i) => ({
-  src: `/gallery/chocolate-hills-${i + 1}.jpg`,
-  alt: t.gallery.altTemplate.replace('{n}', String(i + 1)),
-  width: 1200,
-  height: 800,
-}));
+// 图片：JPG 为兜底，WebP 由 <picture> 优先加载（移动端占比 57%，体积降至约 1/10）
+const toWebp = (src: string, suffix: string) => src.replace(/\.jpe?g$/i, `${suffix}.webp`);
+const heroWebp = toWebp(ATTRACTION.heroImage, '-1400');
+const aboutWebp = toWebp(ATTRACTION.aboutImage, '-1400');
+const seasonWebp = toWebp(ATTRACTION.seasonImage, '-1400');
+const photos = ATTRACTION.photos.map((photo, i) => {
+  const thumb = toWebp(photo.src, '-480');
+  const full = toWebp(photo.src, '-1400');
+  return {
+    src: photo.src,
+    thumb,
+    full,
+    srcset: `${thumb} 480w, ${full} 1400w`,
+    alt: t.gallery.altTemplate.replace('{n}', String(i + 1)),
+    width: photo.width,
+    height: photo.height,
+  };
+});
 const transportOptions = (Object.keys(t.transport.modes) as Array<keyof typeof t.transport.modes>).map(mode => ({
   mode: t.transport.modes[mode],
   detail: t.transport.modeDetails[mode],
@@ -55,6 +77,9 @@ const transportOptions = (Object.keys(t.transport.modes) as Array<keyof typeof t
 
 const fullMapsUrl = ATTRACTION.maps.share;
 const embedSrc = ATTRACTION.maps.embed;
+const coordsUrl = ATTRACTION.maps.coords;
+const govtTourismUrl = ATTRACTION.authorities[0].url;
+const homePath = localizePath('/', locale);
 
 function feeLabel(php: number) { return php === 0 ? t.freeLabel : `₱${php}`; }
 function replace(template: string, vars: Record<string, string | number>): string {
@@ -68,15 +93,19 @@ function replace(template: string, vars: Record<string, string | number>): strin
   <!-- 1. HERO -->
   <section id="hero" class="relative min-h-screen flex items-center justify-center overflow-hidden">
     <div class="absolute inset-0 z-0">
-      <img
-        src="/gallery/chocolate-hills-1.jpg"
-        alt={t.gallery.altTemplate.replace('{n}', '1')}
-        class="w-full h-full object-cover"
-        loading="eager"
-        decoding="async"
-        width="1200"
-        height="800"
-      />
+      <picture class="block w-full h-full">
+        <source srcset={heroWebp} type="image/webp" />
+        <img
+          src={ATTRACTION.heroImage}
+          alt={t.gallery.heroAlt}
+          class="w-full h-full object-cover"
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+          width="1200"
+          height="800"
+        />
+      </picture>
       <div class="absolute inset-0 bg-gradient-to-b from-chocolate-950/60 via-chocolate-950/40 to-cream-50"></div>
     </div>
 
@@ -86,8 +115,9 @@ function replace(template: string, vars: Record<string, string | number>): strin
           {ATTRACTION.addressRegion}, {t.location.country}
         </span>
       </div>
+      <!-- H1：全页唯一，写明全称与城市 -->
       <h1 class="animate-fade-up opacity-0 text-4xl sm:text-5xl md:text-7xl font-display font-bold text-cream-50 leading-tight mb-4" style="animation-delay:0.25s">
-        {ATTRACTION.name}
+        {ATTRACTION.name} ({ATTRACTION.addressCity})
       </h1>
       <p class="animate-fade-up opacity-0 text-lg sm:text-xl text-cream-200 mb-2 max-w-2xl mx-auto" style="animation-delay:0.4s">
         {t._meta.tagline}
@@ -146,37 +176,106 @@ function replace(template: string, vars: Record<string, string | number>): strin
           <div class="text-xs text-chocolate-500">{t.quickFacts.stepsLabel}</div>
         </div>
       </div>
+      <!-- 评分与评价数来源小字：同步自 Google 地图用户评价 -->
+      <p class="text-center text-[11px] sm:text-xs text-chocolate-500 mt-4 leading-relaxed">
+        {t.reviews.syncLine.replace('{syncedAt}', ATTRACTION.reviewSyncedAt)}
+        <a
+          href={fullMapsUrl}
+          target="_blank"
+          rel="noopener noreferrer nofollow"
+          class="text-leaf-600 hover:text-leaf-700 underline underline-offset-2 transition-colors"
+        >
+          {t.reviews.syncCta}
+        </a>
+      </p>
     </div>
   </section>
+
+  <!-- 2.5 WEATHER (实时天气 + 未来 7 天预报，服务端获取并缓存) -->
+  <WeatherSection locale={locale} />
 
   <!-- 3. ABOUT -->
   <section id="about" class="py-16 md:py-20 bg-white">
     <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <!-- 4.2 地理面包屑与归属层级 -->
+      <div class="mb-6">
+        <Breadcrumb locale={locale} />
+      </div>
       <div class="grid md:grid-cols-2 gap-10 items-center">
         <div>
           <span class="text-leaf-600 font-semibold text-sm uppercase tracking-wider">{t.about.eyebrow}</span>
           <h2 class="text-3xl md:text-4xl font-display font-bold text-chocolate-900 mt-2 mb-4">
             {t.about.heading}
           </h2>
+          <!-- 4.1 首段等位声明：域名含义（短名）与官方全称语义等同 -->
+          <p class="text-chocolate-700 mb-4 leading-relaxed" set:html={t.about.intro} />
           <p class="text-chocolate-700 mb-4 leading-relaxed" set:html={replace(t.about.p1, { name: ATTRACTION.name, hillCount: ATTRACTION.hillCount.toLocaleString(), hillArea: ATTRACTION.hillArea })} />
           <p class="text-chocolate-700 mb-4 leading-relaxed" set:html={replace(t.about.p2, { hillHeight: ATTRACTION.hillHeight })} />
           <p class="text-chocolate-600 text-sm leading-relaxed">{t.about.p3}</p>
         </div>
         <div class="relative">
-          <img
-            src="/gallery/chocolate-hills-2.jpg"
-            alt={t.gallery.altTemplate.replace('{n}', '2')}
-            class="rounded-ch shadow-hill-lg w-full object-cover"
-            style="aspect-ratio: 4/3;"
-            loading="lazy"
-            width="800"
-            height="600"
-          />
+          <picture class="block w-full">
+            <source srcset={aboutWebp} type="image/webp" />
+            <img
+              src={ATTRACTION.aboutImage}
+              alt={t.gallery.altTemplate.replace('{n}', '2')}
+              class="rounded-ch shadow-hill-lg w-full object-cover"
+              style="aspect-ratio: 4/3;"
+              loading="lazy"
+              width="800"
+              height="600"
+            />
+          </picture>
           <div class="absolute -bottom-4 -left-4 bg-cream-100 border border-cream-300 rounded-xl px-4 py-3 shadow-hill text-sm">
             <span class="text-chocolate-800 font-bold text-xl">{ATTRACTION.hillCount.toLocaleString()}+</span><br />
             <span class="text-chocolate-600">{t.about.badgeConical}</span>
           </div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3.5 HISTORY & SIGNIFICANCE -->
+  <section id="history" class="py-16 md:py-20 bg-cream-50">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="max-w-3xl mx-auto">
+        <span class="text-leaf-600 font-semibold text-sm uppercase tracking-wider">{t.history.eyebrow}</span>
+        <h2 class="text-3xl md:text-4xl font-display font-bold text-chocolate-900 mt-2 mb-4">
+          {t.history.heading}
+        </h2>
+        <p class="text-chocolate-700 mb-4 leading-relaxed">{t.history.intro}</p>
+        <p class="text-chocolate-700 mb-4 leading-relaxed">{t.history.p1}</p>
+        <p class="text-chocolate-700 mb-4 leading-relaxed">{t.history.p2}</p>
+        <p class="text-chocolate-600 text-sm leading-relaxed mb-6">{t.history.p3}</p>
+
+        <h3 class="font-bold text-chocolate-800 text-lg mb-3">{t.history.timelineTitle}</h3>
+        <ol class="space-y-3">
+          {t.history.timeline.map((entry) => (
+            <li class="flex gap-3 bg-white rounded-ch shadow-hill p-4">
+              <span class="font-display font-bold text-chocolate-700 w-14 flex-shrink-0">{entry.year}</span>
+              <span class="text-sm text-chocolate-600 leading-relaxed">{entry.text}</span>
+            </li>
+          ))}
+        </ol>
+        <p class="text-xs text-chocolate-500 mt-4 leading-relaxed">{t.history.sourceNote}</p>
+
+        <!-- 民间传说 -->
+        <h3 class="font-bold text-chocolate-800 text-lg mt-6 mb-1">{t.history.legendTitle}</h3>
+        <p class="text-xs text-chocolate-500 mb-3 leading-relaxed">{t.history.legendNote}</p>
+        <div class="space-y-3">
+          <div class="bg-white rounded-ch shadow-hill p-4">
+            <h4 class="font-semibold text-chocolate-800 text-sm">{t.history.legend1Title}</h4>
+            <p class="text-sm text-chocolate-700 mt-1 leading-relaxed">{t.history.legend1Text}</p>
+          </div>
+          <div class="bg-white rounded-ch shadow-hill p-4">
+            <h4 class="font-semibold text-chocolate-800 text-sm">{t.history.legend2Title}</h4>
+            <p class="text-sm text-chocolate-700 mt-1 leading-relaxed">{t.history.legend2Text}</p>
+          </div>
+        </div>
+
+        <!-- 地质科普解释 -->
+        <h3 class="font-bold text-chocolate-800 text-lg mt-6 mb-2">{t.history.scienceTitle}</h3>
+        <p class="text-sm text-chocolate-700 leading-relaxed">{t.history.scienceText}</p>
       </div>
     </div>
   </section>
@@ -197,16 +296,19 @@ function replace(template: string, vars: Record<string, string | number>): strin
             class="gallery-item block overflow-hidden rounded-lg shadow-hill hover:shadow-hill-lg transition-all hover:-translate-y-1 cursor-pointer"
             data-index={i}
           >
-            <img
-              src={photo.src}
-              alt={photo.alt}
-              width={photo.width}
-              height={photo.height}
-              loading="lazy"
-              decoding="async"
-              class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
-              style="aspect-ratio:3/2;"
-            />
+            <picture class="block w-full">
+              <source type="image/webp" srcset={photo.srcset} sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw" />
+              <img
+                src={photo.src}
+                alt={photo.alt}
+                width={photo.width}
+                height={photo.height}
+                loading="lazy"
+                decoding="async"
+                class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                style="aspect-ratio:3/2;"
+              />
+            </picture>
           </a>
         ))}
       </div>
@@ -311,15 +413,18 @@ function replace(template: string, vars: Record<string, string | number>): strin
     <div class="max-w-6xl mx-auto px-4 sm:px-6">
       <div class="grid md:grid-cols-2 gap-10 items-center">
         <div>
-          <img
-            src="/gallery/chocolate-hills-4.jpg"
-            alt={t.gallery.altTemplate.replace('{n}', '4')}
-            class="rounded-ch shadow-hill-lg w-full object-cover"
-            style="aspect-ratio:4/3;"
-            loading="lazy"
-            width="800"
-            height="600"
-          />
+          <picture class="block w-full">
+            <source srcset={seasonWebp} type="image/webp" />
+            <img
+              src={ATTRACTION.seasonImage}
+              alt={t.gallery.altTemplate.replace('{n}', '4')}
+              class="rounded-ch shadow-hill-lg w-full object-cover"
+              style="aspect-ratio:4/3;"
+              loading="lazy"
+              width="800"
+              height="600"
+            />
+          </picture>
         </div>
         <div>
           <span class="text-leaf-600 font-semibold text-sm uppercase tracking-wider">{t.bestTime.eyebrow}</span>
@@ -352,6 +457,9 @@ function replace(template: string, vars: Record<string, string | number>): strin
     </div>
   </section>
 
+  <!-- 6.5 QUARTERLY VISITING STRATEGY -->
+  <SeasonSection locale={locale} />
+
   <!-- 7. TRANSPORTATION -->
   <section id="transport" class="py-16 md:py-20 bg-white">
     <div class="max-w-6xl mx-auto px-4 sm:px-6">
@@ -359,7 +467,14 @@ function replace(template: string, vars: Record<string, string | number>): strin
         <span class="text-leaf-600 font-semibold text-sm uppercase tracking-wider">{t.transport.eyebrow}</span>
         <h2 class="text-3xl md:text-4xl font-display font-bold text-chocolate-900 mt-2">{t.transport.heading}</h2>
         <p class="text-chocolate-600 mt-3 max-w-2xl mx-auto" set:html={replace(t.transport.subheading, { name: ATTRACTION.nearestAirport.name, distance: ATTRACTION.nearestAirport.distance, travelTime: ATTRACTION.nearestAirport.travelTime })} />
+        <p class="text-chocolate-600 mt-2 text-sm">
+          {t.map.addressLabel}: {ATTRACTION.addressStreet}, {ATTRACTION.addressCity}, {ATTRACTION.addressRegion}, {ATTRACTION.addressCountry} {ATTRACTION.addressPostal} ·{' '}
+          <a href={coordsUrl} target="_blank" rel="noopener noreferrer" class="text-leaf-600 hover:text-leaf-700 underline underline-offset-2">
+            {t.map.coordsLabel}: {ATTRACTION.lat}, {ATTRACTION.lng}
+          </a>
+        </p>
       </div>
+      <h3 class="text-center text-xl font-bold text-chocolate-800 mb-4">{t.transport.detailedHeading}</h3>
       <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto">
         {transportOptions.map((opt) => (
           <div class="bg-cream-100 rounded-ch p-5 shadow-hill">
@@ -370,6 +485,9 @@ function replace(template: string, vars: Record<string, string | number>): strin
       </div>
     </div>
   </section>
+
+  <!-- 7.5 DETAILED TRANSPORT ROUTES -->
+  <TransportRoutesSection locale={locale} />
 
   <!-- 8. PARKING -->
   <section id="parking" class="py-16 md:py-20 bg-cream-100">
@@ -418,6 +536,22 @@ function replace(template: string, vars: Record<string, string | number>): strin
           title={t.map.iframeTitle}
         ></iframe>
       </div>
+
+      <!-- 地点信息 + 权威出站链接（政府 / 官方旅游局） -->
+      <div class="mt-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-sm">
+        <p class="text-chocolate-600">
+          {t.map.addressLabel}: {ATTRACTION.addressStreet}, {ATTRACTION.addressCity}, {ATTRACTION.addressRegion}, {ATTRACTION.addressCountry} {ATTRACTION.addressPostal} ·{' '}
+          <a href={coordsUrl} target="_blank" rel="noopener noreferrer" class="text-leaf-600 hover:text-leaf-700 underline underline-offset-2">
+            {t.map.coordsLabel}: {ATTRACTION.lat}, {ATTRACTION.lng}
+          </a>
+        </p>
+        <p class="text-chocolate-600">
+          {t.map.officialIntro}{' '}
+          <a href={govtTourismUrl} target="_blank" rel="noopener noreferrer" class="text-leaf-600 hover:text-leaf-700 underline underline-offset-2">
+            {t.map.officialPortalLabel}
+          </a>
+        </p>
+      </div>
     </div>
   </section>
 
@@ -450,6 +584,8 @@ function replace(template: string, vars: Record<string, string | number>): strin
         <span class="text-leaf-600 font-semibold text-sm uppercase tracking-wider">{t.nearby.eyebrow}</span>
         <h2 class="text-3xl md:text-4xl font-display font-bold text-chocolate-900 mt-2">{t.nearby.heading}</h2>
         <p class="text-chocolate-600 mt-3 max-w-2xl mx-auto">{t.nearby.subheading}</p>
+        <!-- 4.3 周边语义集群描述 -->
+        <p class="text-chocolate-700 mt-3 max-w-2xl mx-auto text-sm leading-relaxed" set:html={replace(t.nearby.clusterIntro, { landmark1: ATTRACTION.nearbyLandmark1, landmark2: ATTRACTION.nearbyLandmark2 })} />
       </div>
       <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
         {nearbyList.map((spot) => (
@@ -462,6 +598,15 @@ function replace(template: string, vars: Record<string, string | number>): strin
       </div>
     </div>
   </section>
+
+  <!-- 11.5 VISITOR SERVICES & FACILITIES（类型中立） -->
+  <FacilitiesSection locale={locale} />
+
+  <!-- 11.6 SUGGESTED HALF-DAY / FULL-DAY ROUTES -->
+  <RoutesSection locale={locale} />
+
+  <!-- 11.7 PLANS BY TRAVELLER TYPE -->
+  <AudiencePlansSection locale={locale} />
 
   <!-- 12. ITINERARY CHECKLIST -->
   <section id="itinerary" class="py-16 md:py-20 bg-cream-100">
@@ -534,7 +679,13 @@ function replace(template: string, vars: Record<string, string | number>): strin
     </script>
   </section>
 
-  <!-- 13. FAQ -->
+  <!-- 12.5 SCIENCE & VISITOR RESPONSIBILITY -->
+  <ResponsibilitySection locale={locale} />
+
+  <!-- 13. VISITOR REVIEWS (同步自 Google 地图用户评价) -->
+  <ReviewsSection locale={locale} />
+
+  <!-- 14. FAQ -->
   <section id="faq" class="py-16 md:py-20 bg-white">
     <div class="max-w-6xl mx-auto px-4 sm:px-6">
       <div class="text-center mb-10">
@@ -573,46 +724,94 @@ function replace(template: string, vars: Record<string, string | number>): strin
       });
     </script>
   </section>
+
+  <!-- 15. SOURCES & REFERENCES -->
+  <SourcesSection locale={locale} />
 </BaseLayout>
 
-<!-- JSON-LD Structured Data -->
+<!-- JSON-LD Structured Data：单景点实体绑定（评价仅展示于页面，不进 JSON-LD） -->
 <script is:inline type="application/ld+json" set:html={JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'TouristAttraction',
-  name: ATTRACTION.name,
+  '@id': `${SITE.url}/#attraction`,
+  name: ENTITY.attractionFullName,
+  alternateName: [ENTITY.attractionShortName, `${ENTITY.cityName} ${ENTITY.attractionFullName}`],
   description: t._meta.siteDescription,
   inLanguage: t._meta.htmlLang,
   url: SITE.url ? new URL(currentPath, SITE.url).href : undefined,
-  image: SITE.url ? `${SITE.url}/gallery/chocolate-hills-1.jpg` : '/gallery/chocolate-hills-1.jpg',
+  image: [
+    `${SITE.url}${ATTRACTION.heroImage}`,
+    `${SITE.url}${ATTRACTION.aboutImage}`,
+    `${SITE.url}${ATTRACTION.photos[2].src}`,
+  ],
+  isAccessibleForFree: false,
+  priceRange: '₱0–100',
+  amenityFeature: [
+    { '@type': 'LocationFeatureSpecification', name: 'Parking (₱20–50 per vehicle)', value: true },
+    { '@type': 'LocationFeatureSpecification', name: 'Restaurant and café on site', value: true },
+    { '@type': 'LocationFeatureSpecification', name: 'Public restrooms', value: true },
+    { '@type': 'LocationFeatureSpecification', name: 'Viewing deck (214 steps, not wheelchair accessible)', value: true },
+  ],
+  publicAccess: true,
   address: {
     '@type': 'PostalAddress',
     streetAddress: ATTRACTION.addressStreet,
     addressLocality: ATTRACTION.addressCity,
     addressRegion: ATTRACTION.addressRegion,
-    addressCountry: ATTRACTION.addressCountry,
     postalCode: ATTRACTION.addressPostal,
+    addressCountry: ENTITY.countryCode2Letter,
+  },
+  containedInPlace: {
+    '@type': 'AdministrativeArea',
+    name: ENTITY.cityName,
+    containedInPlace: {
+      '@type': 'AdministrativeArea',
+      name: ENTITY.stateProvince,
+      containedInPlace: {
+        '@type': 'Country',
+        name: ENTITY.countryName,
+      },
+    },
   },
   geo: {
     '@type': 'GeoCoordinates',
-    latitude: ATTRACTION.lat,
-    longitude: ATTRACTION.lng,
+    latitude: ENTITY.latitude,
+    longitude: ENTITY.longitude,
   },
-  aggregateRating: {
-    '@type': 'AggregateRating',
-    ratingValue: ATTRACTION.rating,
-    reviewCount: ATTRACTION.reviewCount,
-    bestRating: 5,
-    worstRating: 1,
-  },
+  hasMap: ATTRACTION.maps.share,
   openingHoursSpecification: {
     '@type': 'OpeningHoursSpecification',
     dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
     opens: '08:00',
     closes: '17:30',
   },
-  sameAs: [ATTRACTION.maps.share, ATTRACTION.maps.coords],
+  sameAs: [
+    ATTRACTION.maps.share,
+    ATTRACTION.maps.coords,
+    ATTRACTION.authorities[0].url,
+    ATTRACTION.authorities[1].url,
+  ],
   touristType: ['Nature Lovers', 'Photographers', 'Families', 'Adventure Seekers'],
   telephone: ATTRACTION.phone,
+})} />
+
+<script is:inline type="application/ld+json" set:html={JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: t.breadcrumb.home,
+      item: SITE.url ? new URL(homePath, SITE.url).href : undefined,
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: `${ENTITY.attractionFullName} (${ENTITY.cityName}, ${ENTITY.stateProvince}, ${ENTITY.countryName})`,
+      item: SITE.url ? new URL(currentPath, SITE.url).href : undefined,
+    },
+  ],
 })} />
 
 <script is:inline type="application/ld+json" set:html={JSON.stringify({

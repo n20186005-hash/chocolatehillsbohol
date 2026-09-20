@@ -1,0 +1,89 @@
+---
+import { ATTRACTION } from '../consts';
+import { getDictionary, type LocaleCode } from '../i18n';
+
+const props = Astro.props as { locale: LocaleCode | string };
+const locale = (props.locale ?? 'en') as LocaleCode;
+const t = getDictionary(locale);
+
+const mapsUrl = ATTRACTION.maps.share;
+const coordsUrl = ATTRACTION.maps.coords;
+const primaryAuthority = ATTRACTION.authorities[0];
+
+const reviewsLabel = t.sources.reviewsLabel.replace('{syncedAt}', ATTRACTION.reviewSyncedAt);
+const reviewsNote = t.sources.reviewsSourceNote.replace('{syncedAt}', ATTRACTION.reviewSyncedAt);
+---
+
+<!-- 资料来源区块（E-E-A-T）：评价来源 + 官方 / 政府权威外链 -->
+<section id="sources" class="py-16 md:py-20 bg-white">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="text-center mb-8">
+      <span class="text-leaf-600 font-semibold text-sm uppercase tracking-wider">{t.sources.eyebrow}</span>
+      <h2 class="text-3xl md:text-4xl font-display font-bold text-chocolate-900 mt-2">
+        {t.sources.heading}
+      </h2>
+      <p class="text-chocolate-600 mt-3 max-w-2xl mx-auto text-sm">{t.sources.intro}</p>
+    </div>
+
+    <div class="max-w-3xl mx-auto space-y-4">
+      <!-- 评价来源 -->
+      <div class="bg-cream-100 rounded-ch shadow-hill p-5">
+        <h3 class="font-bold text-chocolate-800 text-base">{reviewsLabel}</h3>
+        <ul class="mt-2 space-y-1 text-sm">
+          <li class="text-chocolate-700">
+            <a href={mapsUrl} target="_blank" rel="noopener noreferrer nofollow" class="text-leaf-600 hover:text-leaf-700 underline underline-offset-2">
+              {ATTRACTION.reviewPlatform} — {ATTRACTION.name}
+            </a>
+          </li>
+          <li class="text-chocolate-700">
+            <a href={coordsUrl} target="_blank" rel="noopener noreferrer nofollow" class="text-leaf-600 hover:text-leaf-700 underline underline-offset-2">
+              {t.map.coordsLabel}: {ATTRACTION.lat}, {ATTRACTION.lng}
+            </a>
+          </li>
+        </ul>
+        <p class="text-xs text-chocolate-500 mt-2 leading-relaxed">{reviewsNote}</p>
+        <a
+          href={mapsUrl}
+          target="_blank"
+          rel="noopener noreferrer nofollow"
+          class="inline-block mt-3 text-sm font-semibold text-leaf-600 hover:text-leaf-700 underline underline-offset-2"
+        >
+          {t.sources.viewAll}
+        </a>
+      </div>
+
+      <!-- 官方 / 政府权威来源 -->
+      <div class="bg-cream-100 rounded-ch shadow-hill p-5">
+        <h3 class="font-bold text-chocolate-800 text-base">{t.sources.officialLabel}</h3>
+        <ul class="mt-2 space-y-2 text-sm">
+          {
+            ATTRACTION.authorities.map((source) => (
+              <li>
+                <a
+                  href={source.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-leaf-600 hover:text-leaf-700 underline underline-offset-2"
+                >
+                  {source.name}
+                </a>
+                <span class="block text-xs text-chocolate-500">{source.note}</span>
+              </li>
+            ))
+          }
+        </ul>
+        <p class="text-xs text-chocolate-500 mt-3 leading-relaxed">
+          {t.location.country} / {ATTRACTION.addressRegion} —
+          <a
+            href={primaryAuthority.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-leaf-600 hover:text-leaf-700 underline underline-offset-2"
+          >
+            {t.map.officialPortalLabel}
+          </a>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,104 @@
+---
+import { ATTRACTION } from '../consts';
+import { getDictionary, type LocaleCode } from '../i18n';
+
+const props = Astro.props as { locale: LocaleCode | string };
+const locale = (props.locale ?? 'en') as LocaleCode;
+const t = getDictionary(locale);
+
+const rating = ATTRACTION.rating;
+const reviewCount = ATTRACTION.reviewCount;
+const full = Math.floor(rating);
+const hasHalf = rating - full >= 0.25 && rating - full < 0.75;
+const empty = 5 - full - (hasHalf ? 1 : 0);
+const mapsUrl = ATTRACTION.maps.share;
+
+const countTemplate = t.reviews.countTemplate
+  .replace('{count}', reviewCount.toLocaleString('en-US'))
+  .replace('{rating}', String(rating));
+const syncLine = t.reviews.syncLine.replace('{syncedAt}', ATTRACTION.reviewSyncedAt);
+const sourceNote = t.reviews.sourceNote.replace('{syncedAt}', ATTRACTION.reviewSyncedAt);
+
+const starPath =
+  'M12 2.5l2.9 5.88 6.49.94-4.7 4.58 1.11 6.46L12 17.32l-5.8 3.05 1.11-6.46-4.7-4.58 6.49-.94L12 2.5z';
+---
+
+<!-- 评价区块：评分与评价数同步自 Google 地图，评价仅在页面展示（不进 JSON-LD） -->
+<section id="reviews" class="py-16 md:py-20 bg-cream-100" data-review-source="google-maps">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="text-center mb-8">
+      <span class="text-leaf-600 font-semibold text-sm uppercase tracking-wider">{t.reviews.eyebrow}</span>
+      <h2 class="text-3xl md:text-4xl font-display font-bold text-chocolate-900 mt-2">
+        {t.reviews.heading}
+      </h2>
+    </div>
+
+    <div class="max-w-3xl mx-auto bg-white rounded-ch shadow-hill p-6 md:p-8">
+      <div class="flex flex-col md:flex-row items-center md:items-start gap-6">
+        <!-- Aggregate rating -->
+        <div class="text-center md:text-left md:pr-6 md:border-r border-cream-200">
+          <div class="text-5xl font-display font-bold text-chocolate-800 leading-none">{rating}</div>
+          <div class="flex items-center justify-center md:justify-start gap-0.5 my-2" role="img" aria-label={`${rating} / 5 · ${ATTRACTION.reviewPlatform}`}>
+            {
+              Array.from({ length: full }).map(() => (
+                <svg class="w-5 h-5 text-chocolate-500" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d={starPath} />
+                </svg>
+              ))
+            }
+            {
+              hasHalf && (
+                <span class="relative inline-block w-5 h-5 overflow-hidden" aria-hidden="true">
+                  <svg class="w-5 h-5 text-chocolate-300 absolute left-0 top-0" viewBox="0 0 24 24" fill="currentColor">
+                    <path d={starPath} />
+                  </svg>
+                  <svg class="w-5 h-5 text-chocolate-500 absolute left-0 top-0" viewBox="0 0 24 24" fill="currentColor" style="clip-path: inset(0 50% 0 0);">
+                    <path d={starPath} />
+                  </svg>
+                </span>
+              )
+            }
+            {
+              Array.from({ length: Math.max(empty, 0) }).map(() => (
+                <svg class="w-5 h-5 text-chocolate-300" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d={starPath} />
+                </svg>
+              ))
+            }
+          </div>
+          <p class="text-sm text-chocolate-600">{countTemplate}</p>
+          <p class="text-xs text-chocolate-500 mt-1">{t.reviews.ratingLabel}</p>
+        </div>
+
+        <!-- Source attribution -->
+        <div class="flex-1">
+          <p class="text-sm font-semibold text-chocolate-800">{t.reviews.sourceLead}</p>
+          <p class="text-xs text-chocolate-500 mt-2 leading-relaxed">
+            {syncLine}
+            <a
+              href={mapsUrl}
+              target="_blank"
+              rel="noopener noreferrer nofollow"
+              class="text-leaf-600 hover:text-leaf-700 underline underline-offset-2 transition-colors"
+            >
+              {t.reviews.syncCta}
+            </a>
+          </p>
+          <p class="text-xs text-chocolate-500 mt-2 leading-relaxed">{sourceNote}</p>
+          <p class="text-xs text-chocolate-500 mt-1 leading-relaxed">{t.reviews.quoteNote}</p>
+          <a
+            href={mapsUrl}
+            target="_blank"
+            rel="noopener noreferrer nofollow"
+            class="inline-flex items-center gap-2 mt-4 px-5 py-2.5 bg-chocolate-700 hover:bg-chocolate-800 text-cream-50 text-sm font-semibold rounded-full transition-all shadow-hill"
+          >
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d={starPath} />
+            </svg>
+            {t.reviews.cta}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

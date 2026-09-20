@@ -1,0 +1,51 @@
+---
+import { getDictionary, type LocaleCode } from '../i18n';
+
+const props = Astro.props as { locale: LocaleCode | string };
+const locale = (props.locale ?? 'en') as LocaleCode;
+const t = getDictionary(locale);
+const c = t.transportRoutes.columns;
+---
+
+<!-- 交通详细攻略：机场 / 港口 / 公交 / 出租车 / 包车 / 自驾 -->
+<section id="transport-routes" class="py-16 md:py-20 bg-white">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="text-center mb-8">
+      <span class="text-leaf-600 font-semibold text-sm uppercase tracking-wider">{t.transportRoutes.eyebrow}</span>
+      <h2 class="text-3xl md:text-4xl font-display font-bold text-chocolate-900 mt-2">
+        {t.transportRoutes.heading}
+      </h2>
+      <p class="text-chocolate-600 mt-3 max-w-2xl mx-auto">{t.transportRoutes.intro}</p>
+    </div>
+
+    <div class="grid lg:grid-cols-2 gap-4">
+      {
+        t.transportRoutes.routes.map((route) => (
+          <article class="bg-cream-100 rounded-ch shadow-hill p-5">
+            <h3 class="font-bold text-chocolate-800 text-base">{route.from}</h3>
+            <div class="flex flex-wrap gap-x-4 gap-y-1 text-xs text-chocolate-600 mt-2">
+              <span>{route.distance}</span>
+              <span>
+                {c.duration}: <span class="font-semibold text-chocolate-800">{route.duration}</span>
+              </span>
+              <span>
+                {c.fare}: <span class="font-semibold text-chocolate-800">{route.fare}</span>
+              </span>
+            </div>
+
+            <p class="text-xs uppercase tracking-wider text-chocolate-500 mt-4">{c.steps}</p>
+            <ol class="mt-2 space-y-2 text-sm text-chocolate-700 list-decimal list-inside">
+              {route.steps.map((step) => (
+                <li class="leading-relaxed">{step}</li>
+              ))}
+            </ol>
+
+            <p class="text-xs text-leaf-700 mt-3 leading-relaxed">{route.tip}</p>
+          </article>
+        ))
+      }
+    </div>
+
+    <p class="text-center text-xs text-chocolate-500 mt-6">{t.transportRoutes.fareNote}</p>
+  </div>
+</section>

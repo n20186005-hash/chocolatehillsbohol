@@ -12,7 +12,7 @@ const props = Astro.props as {
   title?: string;
   description?: string;
 };
-const locale = (props.locale ?? 'fil') as LocaleCode;
+const locale = (props.locale ?? 'en') as LocaleCode;
 const currentPath = props.currentPath ?? '/';
 const t = getDictionary(locale);
 
@@ -29,6 +29,14 @@ const description = props.description ?? t._meta.siteDescription;
     <meta name="description" content={description} />
     <BaseHead locale={locale} currentPath={currentPath} title={title} description={description} />
     <GA4 />
+    <!-- PWA: register service worker -->
+    <script is:inline>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function () {
+          navigator.serviceWorker.register('/sw.js').catch(function () {});
+        });
+      }
+    </script>
   </head>
   <body id="top" class="bg-cream-50 text-chocolate-950 font-sans antialiased">
     <Navbar locale={locale} currentPath={currentPath} siteTitle={t._meta.siteTitleShort} />
