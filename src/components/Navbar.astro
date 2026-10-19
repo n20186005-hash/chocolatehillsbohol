@@ -26,7 +26,7 @@ const links = [
   id="navbar"
   class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-cream-50/80 backdrop-blur-md shadow-sm"
 >
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between h-14">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between min-h-14 py-2 gap-2">
     <!-- Logo -->
     <a href="#top" class="flex items-center gap-2 no-underline group" aria-label="Home">
       <img
@@ -42,7 +42,7 @@ const links = [
     </a>
 
     <!-- Nav links (desktop) -->
-    <ul class="hidden md:flex items-center gap-1 text-sm font-medium" id="nav-links">
+    <ul class="hidden xl:flex flex-wrap justify-end items-center gap-1 text-sm font-medium" id="nav-links">
       {
         links.map(({ href, label }) => (
           <li>
@@ -61,10 +61,11 @@ const links = [
     </ul>
 
     <!-- Right controls (mobile) -->
-    <div class="md:hidden flex items-center gap-1">
+    <div class="xl:hidden flex items-center gap-1">
       <LanguageSwitcher locale={locale} currentPath={props.currentPath} />
       <button
         id="menu-toggle"
+        aria-controls="mobile-menu"
         class="p-2 rounded-lg text-chocolate-700 hover:bg-chocolate-100 transition-colors"
         aria-label="Toggle menu"
         aria-expanded="false"
@@ -78,7 +79,7 @@ const links = [
   </div>
 
   <!-- Mobile dropdown -->
-  <div id="mobile-menu" class="hidden md:hidden border-t border-chocolate-100 bg-cream-50/95 backdrop-blur-md pb-3">
+  <div id="mobile-menu" class="hidden xl:hidden border-t border-chocolate-100 bg-cream-50/95 backdrop-blur-md pb-3 max-h-[70vh] overflow-y-auto">
     <ul class="flex flex-col px-4 pt-2 gap-1 text-sm font-medium">
       {
         links.map(({ href, label }) => (

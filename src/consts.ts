@@ -12,7 +12,7 @@ export const SITE = {
   ogImageAlt: 'Chocolate Hills Complex viewing deck in Carmen, Bohol',
   tagline: 'Nature\'s Sweetest Masterpiece in Bohol, Philippines',
   description:
-    'Chocolate Hills Complex in Carmen, Bohol: ₱100 entrance fee, open daily 8:00 AM–5:30 PM, 214 steps to the viewing deck, address, map & photos. 2026 visitor guide.',
+    'Chocolate Hills Complex in Carmen, Bohol: ₱100 entrance fee, viewing-deck access checks, 214 steps to the viewing deck, address, map & photos. 2026 visitor guide.',
   locale: 'en',
   ogLocale: 'en_PH',
   logoAlt: 'Chocolate Hills Logo',
@@ -34,8 +34,8 @@ export const ENTITY = {
   countryName: 'Philippines',
   countryCode2Letter: 'PH',
   postalCode: '6319',
-  latitude: 9.7988,
-  longitude: 124.1648,
+  latitude: 9.7986441,
+  longitude: 124.1674637,
 };
 
 export const ATTRACTION = {
@@ -50,16 +50,16 @@ export const ATTRACTION = {
   addressCountry: 'Philippines',
   addressCountryCode: 'PH',
   plusCode: 'Q5X8+FX4',
-  lat: 9.7988,
-  lng: 124.1648,
+  lat: 9.7986441,
+  lng: 124.1674637,
   phone: '+63180018887777',
   rating: 4.5,
-  reviewCount: 10410,
+  reviewCount: 10437,
   reviewPlatform: 'Google Maps',
-  /** 评价同步时间（用于页面来源标注，规避 Google 判违规） */
-  reviewSyncedAt: 'September 2026',
-  hours: '8:00 AM – 5:30 PM',
-  hoursDays: 'Daily (including holidays)',
+  /** 地图公开评分核对日期；数据为时间点快照 */
+  reviewSyncedAt: '2026-10-18',
+  hours: 'Confirm gate hours',
+  hoursDays: 'Confirm locally',
   entranceFee: {
     adult: 100,
     child: 50,
@@ -105,7 +105,7 @@ export const ATTRACTION = {
     /** Short share link — Hero, Gallery, Footer anchors */
     share: 'https://maps.app.goo.gl/ZPm3g24TnAyJ9agYA',
     /** Coordinates link — structured data */
-    coords: 'https://www.google.com/maps?q=9.7988,124.1648',
+    coords: 'https://www.google.com/maps?q=9.7986441,124.1674637',
     /** Embed iframe src for Map section — include local language param */
     embed: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3931.613091566882!2d124.16476907697863!3d9.798767690296602!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33aa16f89932b4ed%3A0xf893a780df0b83b0!2sChocolate%20Hills%20Complex!5e0!3m2!1sen!2sph!4v1786414261136!5m2!1sen!2sph',
   },

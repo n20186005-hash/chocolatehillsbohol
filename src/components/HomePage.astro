@@ -162,7 +162,7 @@ function replace(template: string, vars: Record<string, string | number>): strin
         </div>
         <div class="bg-cream-50 rounded-ch shadow-hill p-4 text-center">
           <div class="text-2xl mb-1">🕗</div>
-          <div class="text-sm font-semibold text-chocolate-800">{ATTRACTION.hours}</div>
+          <div class="text-sm font-semibold text-chocolate-800">{locale === 'fil' ? 'Kumpirmahin muna' : 'Confirm gate hours'}</div>
           <div class="text-xs text-chocolate-500">{t.quickFacts.openDaily}</div>
         </div>
         <div class="bg-cream-50 rounded-ch shadow-hill p-4 text-center">
@@ -190,6 +190,13 @@ function replace(template: string, vars: Record<string, string | number>): strin
       </p>
     </div>
   </section>
+
+  <nav aria-label={locale === 'fil' ? 'Mabilis na gabay' : 'Plan your visit'} class="max-w-6xl mx-auto px-4 py-4 flex flex-wrap justify-center gap-3 text-sm text-chocolate-800">
+    <a class="rounded-full border px-4 py-2" href="#fees">{locale === 'fil' ? 'Bayad at oras' : 'Entrance fee & hours'}</a>
+    <a class="rounded-full border px-4 py-2" href="#map">{locale === 'fil' ? 'Lokasyon at mapa' : 'Location & map'}</a>
+    <a class="rounded-full border px-4 py-2" href="#transport">{t.nav.transport}</a>
+    <a class="rounded-full border px-4 py-2" href="#faq">FAQ</a>
+  </nav>
 
   <!-- 2.5 WEATHER (实时天气 + 未来 7 天预报，服务端获取并缓存) -->
   <WeatherSection locale={locale} />
@@ -394,17 +401,18 @@ function replace(template: string, vars: Record<string, string | number>): strin
         <div class="bg-cream-100 rounded-ch p-6 text-center shadow-hill">
           <div class="text-4xl mb-3">👧</div>
           <h3 class="font-bold text-chocolate-800 text-lg">{t.fees.child}</h3>
-          <p class="text-3xl font-display font-bold text-chocolate-700 mt-1">{feeLabel(ATTRACTION.entranceFee.child)}</p>
+          <p class="text-3xl font-display font-bold text-chocolate-700 mt-1">{locale === 'fil' ? 'Kumpirmahin' : 'Confirm locally'}</p>
           <p class="text-xs text-chocolate-500 mt-1">{t.fees.nonResident}</p>
         </div>
         <div class="bg-leaf-50 rounded-ch p-6 text-center shadow-hill">
           <div class="text-4xl mb-3">👴</div>
           <h3 class="font-bold text-chocolate-800 text-lg">{t.fees.senior}</h3>
-          <p class="text-3xl font-display font-bold text-leaf-600 mt-1">{feeLabel(ATTRACTION.entranceFee.senior)}</p>
+          <p class="text-3xl font-display font-bold text-leaf-600 mt-1">{locale === 'fil' ? 'Kumpirmahin' : 'Confirm locally'}</p>
           <p class="text-xs text-chocolate-500 mt-1">{t.fees.withId}</p>
         </div>
       </div>
-      <p class="text-center text-xs text-chocolate-400 mt-6">{t.fees.notice}</p>
+      <p class="text-center text-sm text-chocolate-600 mt-6">{t.fees.notice}</p>
+      <p class="text-center text-sm mt-3"><a class="underline" href="https://philippines.travel/destinations/chocolate-hills-bohol/index" target="_blank" rel="noopener noreferrer">Philippines Travel — Chocolate Hills</a> · <a class="underline" href={fullMapsUrl} target="_blank" rel="noopener noreferrer">Google Maps</a></p>
     </div>
   </section>
 
@@ -745,7 +753,6 @@ function replace(template: string, vars: Record<string, string | number>): strin
     `${SITE.url}${ATTRACTION.photos[2].src}`,
   ],
   isAccessibleForFree: false,
-  priceRange: '₱0–100',
   amenityFeature: [
     { '@type': 'LocationFeatureSpecification', name: 'Parking (₱20–50 per vehicle)', value: true },
     { '@type': 'LocationFeatureSpecification', name: 'Restaurant and café on site', value: true },
@@ -779,18 +786,7 @@ function replace(template: string, vars: Record<string, string | number>): strin
     longitude: ENTITY.longitude,
   },
   hasMap: ATTRACTION.maps.share,
-  openingHoursSpecification: {
-    '@type': 'OpeningHoursSpecification',
-    dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-    opens: '08:00',
-    closes: '17:30',
-  },
-  sameAs: [
-    ATTRACTION.maps.share,
-    ATTRACTION.maps.coords,
-    ATTRACTION.authorities[0].url,
-    ATTRACTION.authorities[1].url,
-  ],
+  sameAs: [ATTRACTION.maps.share],
   touristType: ['Nature Lovers', 'Photographers', 'Families', 'Adventure Seekers'],
   telephone: ATTRACTION.phone,
 })} />

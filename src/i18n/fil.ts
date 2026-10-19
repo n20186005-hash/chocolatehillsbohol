@@ -10,7 +10,7 @@ export const fil: TranslationShape = {
     siteTitleShort: 'Chocolate Hills',
     tagline: 'Ang Pinakamatamis na Likha ng Kalikasan sa Bohol, Pilipinas',
     siteDescription:
-      'Chocolate Hills Complex sa Carmen, Bohol: ₱100 bayad sa pagpasok, bukas araw-araw 8:00 AM–5:30 PM, 214 na hakbang papuntang viewing deck, address, mapa at larawan. Gabay para sa 2026.',
+      'Chocolate Hills Complex sa Carmen, Bohol: ₱100 bayad sa pagpasok, mga paalala sa oras ng viewing deck, 214 na hakbang papuntang viewing deck, address, mapa at larawan. Gabay para sa 2026.',
     // OG 模板：{{ATTRACTION_FULL_NAME}} - {{CITY_NAME}} Travel Guide
     ogTitle: 'Chocolate Hills Complex, Carmen Bohol — Gabay sa Bisita 2026',
     ogDescription:
@@ -42,7 +42,7 @@ export const fil: TranslationShape = {
   },
   quickFacts: {
     adultEntry: 'Pagpasok ng Matanda',
-    openDaily: 'Bukas Araw-araw',
+    openDaily: 'Kumpirmahin ang oras ng viewing deck',
     reviews: 'pagsusuri',
     stepsLabel: 'Patungo sa Deck ng Tanaw',
   },
@@ -106,13 +106,13 @@ export const fil: TranslationShape = {
   fees: {
     eyebrow: 'Pagpasok',
     heading: 'Tiket at Bayad sa Pagpasok',
-    subheading: 'Ang deck ng tanawin ng Chocolate Hills Complex ay bukas {hoursDays}, {hours}. Babayaran ang mga bayad sa pasukan.',
+    subheading: 'Nakalista sa pambansang tourism guide ang ₱100 bawat tao para sa Carmen viewpoint. Magkaiba ang oras sa mga sanggunian: 24 oras sa Google Maps, ngunit 6 PM ang pagsasara sa tourism guide. Kumpirmahin muna ang oras ng ticket office at viewing deck.',
     adult: 'Matanda',
-    nonResident: 'Hindi residente',
+    nonResident: 'Presyo sa tourism guide',
     child: 'Bata',
     senior: 'Senior / PWD / Wala pang 6 na taon',
     withId: 'May dalang wastong ID',
-    notice: 'Ang mga residente ng Pilipinas ay may mas mababang halaga ng tiket na may dalang government-issued ID. Ang mga presyo ay maaaring magbago nang walang paunang abiso.',
+    notice: 'Sinuri ang presyo at access noong 2026-10-18. Kumpirmahin ang bayad ng bata, diskuwento at libreng pagpasok sa ticket office; dalhin ang angkop na ID.',
   },
   bestTime: {
     eyebrow: 'Plano ang Iyong Pagbisita',
@@ -123,7 +123,7 @@ export const fil: TranslationShape = {
     seasonTitle: 'Pinakamahusay na Panahon: {season}',
     seasonText: 'Ang mga burol ay nagiging ginintuang-kayumanggi tuwing mga buwan ng tagtuyot — ang tanyag na anyong "tsokolate". Ang malinaw na langit ay nagbibigay ng pinakamahusay na mga larawang panoramiko.',
     timeTitle: 'Pinakamahusay na Oras ng Araw: {time}',
-    timeText: 'Ang madaling araw ay nagbibigay ng pinakamalambot na liwanag, pinakamalamig na temperatura, at pinakakaunting bisita. Ang pagbubukas ng 6 ng umaga ay mainam para sa mga photographer at naghahanap ng kapayapaan.',
+    timeText: 'Ang madaling araw ay nagbibigay ng pinakamalambot na liwanag, pinakamalamig na temperatura, at pinakakaunting bisita. Kumpirmahin ang pagbubukas ng gate bago magplano ng sunrise visit.',
     durationTitle: 'Inirerekomendang Tagal: {duration}',
     durationText: 'Maglaan ng 15 minuto para sa pag-akyat, hindi bababa sa 30 minuto sa deck ng tanawin, at dagdag na oras para sa kainan at tindahan ng regalo. Pagsamahin sa mga kalapit na atraksyon para sa buong araw na pagbisita.',
   },
@@ -181,10 +181,10 @@ export const fil: TranslationShape = {
     sourceLead: 'Mula sa mga review ng mga gumagamit ng Google Maps · Tingnan ang lahat ng review sa Google Maps',
     // 评分旁的小字（含同步时间与「点击查看谷歌地图全部评价」链接）
     syncLine:
-      'Ang rating at bilang ng review ay naka-sync mula sa mga review ng mga gumagamit ng Google Maps · {syncedAt} ·',
+      'Snapshot ng rating at bilang ng review sa Google Maps, sinuri · {syncedAt} ·',
     syncCta: 'Tingnan ang lahat ng review sa Google Maps ↗',
     sourceNote:
-      'Naka-sync mula sa mga review ng mga gumagamit ng Google Maps, naka-sync noong {syncedAt}; ang copyright ay pagmamay-ari ng mga orihinal na may-akda at ng Google Maps.',
+      'Snapshot ng rating at bilang ng review sa Google Maps, sinuri noong {syncedAt}; maaaring magbago ang mga bilang. Basahin ang mga review sa pinagmulan.',
     cta: 'Tingnan ang lahat ng review sa Google Maps',
     quoteNote:
       'Ang pinagsama-samang rating at bilang ng review lamang ang ipinapakita dito. Ang mga teksto ng review ay nananatili sa Google Maps at hindi kinokopya sa pahinang ito.',
@@ -195,9 +195,9 @@ export const fil: TranslationShape = {
     intro:
       'Ang gabay na ito ay binuo mula sa mga pampubliko at awtoritatibong pinagmulan. Ang mga rating at review ay sinipi mula sa Google Maps at hindi isinumite sa pamamagitan ng website na ito.',
     // 资料来源区块：评价 · 同步时间
-    reviewsLabel: 'Mga review · naka-sync noong {syncedAt}',
+    reviewsLabel: 'Mga review · sinuri noong {syncedAt}',
     reviewsSourceNote:
-      'Naka-sync mula sa mga review ng mga gumagamit ng Google Maps, naka-sync noong {syncedAt}; ang copyright ay pagmamay-ari ng mga orihinal na may-akda at ng Google Maps.',
+      'Snapshot ng rating at bilang ng review sa Google Maps, sinuri noong {syncedAt}; maaaring magbago ang mga bilang. Basahin ang mga review sa pinagmulan.',
     viewAll: 'Tingnan ang lahat ng review sa Google Maps',
     officialLabel: 'Mga opisyal at pampamahalaang pinagmulan',
     updatedLabel: 'Huling naka-sync',
@@ -283,7 +283,7 @@ export const fil: TranslationShape = {
     items: [
       {
         q: 'Ano ang oras ng pagbubukas ng Chocolate Hills Complex?',
-        a: 'Bukas ito araw-araw, kabilang ang mga holiday, mula 8:00 AM hanggang 5:30 PM. Ang 214 na hakbang patungo sa viewing deck ay walang lilim, kaya pinakamalamig at pinakamalinaw ang tanawin sa madaling araw, pagkabukas pa lang.',
+        a: 'Magkaiba ang mga sangguniang sinuri noong 2026-10-18: 24 oras sa Google Maps at 6 PM ang pagsasara sa pambansang tourism guide. Hindi garantiya ang map status na bukas ang ticket office o viewing deck buong gabi. Kumpirmahin ang oras sa lugar bago pumunta nang maaga o huli.',
       },
       {
         q: 'Anong oras nagsasara ang Chocolate Hills Complex?',
@@ -291,11 +291,11 @@ export const fil: TranslationShape = {
       },
       {
         q: 'Magkano ang bayad sa pagpasok sa 2026?',
-        a: 'Sa 2026: ₱100 para sa mga adult na hindi residente at ₱50 para sa mga bata. Libre ang mga senior citizen, PWD at batang wala pang 6 na taon, at mas mababa ang bayad ng mga residente ng Pilipinas na may dalang wastong ID. Ang paradahan ay ₱20–50 bawat sasakyan.',
+        a: 'Nakalista sa pambansang tourism guide ang ₱100 bawat tao para sa pangunahing Carmen observation deck, sinuri noong 2026-10-18. Kumpirmahin sa ticket office ang bayad ng bata, diskuwento, libreng pagpasok at parking. Hiwalay ang bayad sa Chocolate Hills Adventure Park.',
       },
       {
         q: 'Saan matatagpuan ang Chocolate Hills Complex?',
-        a: 'Ang address ay Q5X8+FX4, Loay Interior Road, Carmen, Bohol 6319, Pilipinas (9.7988° N, 124.1648° E). Ito ay nasa humigit-kumulang 55 km mula sa Lungsod ng Tagbilaran at 70 km mula sa Bohol-Panglao International Airport (TAG) — mga 1.5 oras na biyahe.',
+        a: 'Ang address ay Q5X8+FX4, Loay Interior Road, Carmen, Bohol 6319, Pilipinas (9.7986441° N, 124.1674637° E). Ito ay nasa humigit-kumulang 55 km mula sa Lungsod ng Tagbilaran at 70 km mula sa Bohol-Panglao International Airport (TAG) — mga 1.5 oras na biyahe.',
       },
       {
         q: 'Paano pumunta sa Chocolate Hills mula sa Tagbilaran o Panglao?',
@@ -799,7 +799,7 @@ export const fil: TranslationShape = {
     viewOnMaps: 'Tingnan sa Google Maps',
     disclaimer: 'Independiyenteng gabay sa paglalakbay. Hindi kaanib o kinikilala ng Chocolate Hills Complex o ng pamahalaan ng Pilipinas.',
     reviewNote:
-      'Ang mga rating at review ay naka-sync mula sa mga review ng mga gumagamit ng Google Maps; ang copyright ay pagmamay-ari ng mga orihinal na may-akda at ng Google Maps.',
+      'May petsa ang snapshot ng rating sa Google Maps; sundan ang link para sa kasalukuyang review.',
     copyright: '© {year} Lahat ng karapatan ay nakalaan.',
   },
   freeLabel: 'Libre',

@@ -8,7 +8,7 @@ export const en = {
     siteTitleShort: 'Chocolate Hills',
     tagline: "Nature's Sweetest Masterpiece in Bohol, Philippines",
     siteDescription:
-      'Chocolate Hills Complex in Carmen, Bohol: ₱100 entrance fee, open daily 8:00 AM–5:30 PM, 214 steps to the viewing deck, address, map & photos. 2026 visitor guide.',
+      'Chocolate Hills Complex in Carmen, Bohol: ₱100 entrance fee, viewing-deck access checks, 214 steps to the viewing deck, address, map & photos. 2026 visitor guide.',
     // OG 模板：{{ATTRACTION_FULL_NAME}} - {{CITY_NAME}} Travel Guide
     ogTitle: 'Chocolate Hills Complex, Carmen Bohol — 2026 Visitor Guide',
     ogDescription:
@@ -40,7 +40,7 @@ export const en = {
   },
   quickFacts: {
     adultEntry: 'Adult Entry',
-    openDaily: 'Open Daily',
+    openDaily: 'Confirm viewing-deck access',
     reviews: 'reviews',
     stepsLabel: 'To Viewing Deck',
   },
@@ -103,13 +103,13 @@ export const en = {
   fees: {
     eyebrow: 'Admission',
     heading: 'Tickets & Entrance Fees',
-    subheading: 'The Chocolate Hills Complex viewing deck is open {hoursDays}, {hours}. Fees are payable at the entrance.',
+    subheading: 'The national tourism guide lists ₱100 per person for the Carmen viewpoint. Opening-hour sources conflict: Google Maps shows 24-hour access, while the tourism guide describes closing at 6 PM. Confirm ticket-office and viewing-deck hours before an early or late visit.',
     adult: 'Adult',
-    nonResident: 'Non-resident',
+    nonResident: 'Tourism-guide reference price',
     child: 'Child',
     senior: 'Senior / PWD / Under 6',
     withId: 'With valid ID',
-    notice: 'Philippine residents enjoy lower rates with valid government-issued ID. Prices subject to change without notice.',
+    notice: 'Price and access sources checked 2026-10-18. Child rates, discounts and exemptions need confirmation at the ticket office; bring eligible ID.',
   },
   bestTime: {
     eyebrow: 'Plan Your Visit',
@@ -120,7 +120,7 @@ export const en = {
     seasonTitle: 'Best Season: {season}',
     seasonText: 'The hills turn golden-brown during the dry months — the iconic "chocolate" look. Clear skies make for the best panoramic photos.',
     timeTitle: 'Best Time of Day: {time}',
-    timeText: 'Early morning offers the softest light, coolest temperatures, and fewest visitors. The 6 AM opening is ideal for photographers and peace seekers.',
+    timeText: 'Early morning offers the softest light, coolest temperatures, and fewest visitors. Confirm the gate-opening time before planning a sunrise visit.',
     durationTitle: 'Suggested Duration: {duration}',
     durationText: 'Allow 15 minutes for the climb, at least 30 minutes at the viewing deck, and extra time for the café and gift shop. Combine with nearby attractions for a full day.',
   },
@@ -178,10 +178,10 @@ export const en = {
     sourceLead: 'Reviews from Google Maps users · View all Google Maps reviews',
     // 评分旁的小字（含同步时间与「点击查看谷歌地图全部评价」链接）
     syncLine:
-      'Rating and review count synced from Google Maps user reviews · {syncedAt} ·',
+      'Google Maps rating and review-count snapshot, checked · {syncedAt} ·',
     syncCta: 'View all Google Maps reviews ↗',
     sourceNote:
-      'Synced from Google Maps user reviews, synced {syncedAt}; copyright belongs to the original authors and Google Maps.',
+      'Google Maps rating and review-count snapshot checked {syncedAt}; figures may change. Read individual reviews at the source.',
     cta: 'View all reviews on Google Maps',
     quoteNote:
       'Only the aggregate rating and review count are shown here. Review text remains on Google Maps and is not reproduced on this page.',
@@ -192,9 +192,9 @@ export const en = {
     intro:
       'This guide is compiled from public, authoritative sources. Ratings and reviews are quoted from Google Maps and are not submitted through this website.',
     // 资料来源区块：评价 · 同步时间
-    reviewsLabel: 'Reviews · synced {syncedAt}',
+    reviewsLabel: 'Reviews · checked {syncedAt}',
     reviewsSourceNote:
-      'Synced from Google Maps user reviews, synced {syncedAt}; copyright belongs to the original authors and Google Maps.',
+      'Google Maps rating and review-count snapshot checked {syncedAt}; figures may change. Read individual reviews at the source.',
     viewAll: 'View all reviews on Google Maps',
     officialLabel: 'Official & government sources',
     updatedLabel: 'Last synced',
@@ -280,7 +280,7 @@ export const en = {
     items: [
       {
         q: 'What are the opening hours of Chocolate Hills Complex?',
-        a: 'The complex is open daily, including holidays, from 8:00 AM to 5:30 PM. The 214-step stairway and the viewing deck are fully exposed, so the coolest and clearest window is early morning, right after opening.',
+        a: 'Sources checked on 2026-10-18 disagree: Google Maps labels the complex open 24 hours, while the national tourism guide mentions a 6 PM close. The map status does not confirm round-the-clock ticket-office or viewing-deck access. Confirm the current gate schedule locally, especially for sunrise or sunset.',
       },
       {
         q: 'What time does Chocolate Hills Complex close?',
@@ -288,11 +288,11 @@ export const en = {
       },
       {
         q: 'How much is the entrance fee in 2026?',
-        a: 'As of 2026: ₱100 for adult non-residents and ₱50 for children. Senior citizens, PWDs and children under 6 enter free, and Philippine residents pay lower rates with a valid ID. Parking is ₱20–50 per vehicle.',
+        a: 'The national tourism guide lists ₱100 per person for the main Carmen observation deck, checked on 2026-10-18. Confirm current child rates, discounts, exemptions and parking charges at the ticket office. Chocolate Hills Adventure Park is a separate attraction with separate fees.',
       },
       {
         q: 'Where is Chocolate Hills Complex located?',
-        a: 'The address is Q5X8+FX4, Loay Interior Road, Carmen, Bohol 6319, Philippines (9.7988° N, 124.1648° E). It sits about 55 km from Tagbilaran City and 70 km from Bohol-Panglao International Airport (TAG) — roughly 1.5 hours by road.',
+        a: 'The address is Q5X8+FX4, Loay Interior Road, Carmen, Bohol 6319, Philippines (9.7986441° N, 124.1674637° E). It sits about 55 km from Tagbilaran City and 70 km from Bohol-Panglao International Airport (TAG) — roughly 1.5 hours by road.',
       },
       {
         q: 'How do you get to Chocolate Hills from Tagbilaran or Panglao?',
@@ -796,7 +796,7 @@ export const en = {
     viewOnMaps: 'View on Google Maps',
     disclaimer: 'Independent travel guide. Not affiliated with or or endorsed by the Chocolate Hills Complex or the Philippine government.',
     reviewNote:
-      'Ratings and reviews are synced from Google Maps user reviews; copyright belongs to the original authors and Google Maps.',
+      'The Google Maps rating is a dated snapshot; use the source link for current reviews.',
     copyright: '© {year} All rights reserved.',
   },
   freeLabel: 'Free',

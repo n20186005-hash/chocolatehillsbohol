@@ -7,9 +7,10 @@ import { SITE } from './src/consts';
 
 export default defineConfig({
   site: SITE.url || undefined,
+  trailingSlash: 'always',
   integrations: [
     tailwind(),
-    ...(SITE.url ? [sitemap()] : []),
+    ...(SITE.url ? [sitemap({ customPages: [SITE.url + '/', SITE.url + '/fil/'] })] : []),
   ],
   output: 'server',
   adapter: cloudflare({
